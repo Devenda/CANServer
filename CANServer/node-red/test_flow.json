@@ -1,0 +1,253 @@
+[
+    {
+        "id": "c457c91e.98758",
+        "type": "websocket in",
+        "z": "c4bc86ae.bc827",
+        "name": "Test socket",
+        "server": "",
+        "client": "26596680.efe712",
+        "x": 92.90000915527344,
+        "y": 68,
+        "wires": [
+            [
+                "4bfd4d34.3080a4",
+                "4b2b89b2.a75f4"
+            ]
+        ]
+    },
+    {
+        "id": "5064e98d.a955b8",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Pure JSON",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 455.9000244140625,
+        "y": 85.19999694824219,
+        "wires": []
+    },
+    {
+        "id": "6d325cbd.401b1c",
+        "type": "ui_text",
+        "z": "c4bc86ae.bc827",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "One",
+        "label": "Value:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 776.9000244140625,
+        "y": 222.40000915527344,
+        "wires": []
+    },
+    {
+        "id": "4bfd4d34.3080a4",
+        "type": "json",
+        "z": "c4bc86ae.bc827",
+        "name": "",
+        "x": 269.9000244140625,
+        "y": 134.59999084472656,
+        "wires": [
+            [
+                "aa867c7e.b620b8",
+                "5064e98d.a955b8"
+            ]
+        ]
+    },
+    {
+        "id": "aa867c7e.b620b8",
+        "type": "split",
+        "z": "c4bc86ae.bc827",
+        "name": "",
+        "splt": "\\n",
+        "x": 438.9000244140625,
+        "y": 193.1999969482422,
+        "wires": [
+            [
+                "502eb42e.35dd74",
+                "87748a02.f6ea4",
+                "ee4812a4.e9643",
+                "66474ff4.6c462"
+            ]
+        ]
+    },
+    {
+        "id": "502eb42e.35dd74",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Objects after split",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 662.2000122070312,
+        "y": 126.19999694824219,
+        "wires": []
+    },
+    {
+        "id": "4b2b89b2.a75f4",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "JSON String",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 282.20001220703125,
+        "y": 32.19999694824219,
+        "wires": []
+    },
+    {
+        "id": "b94dbd69.a6a6f8",
+        "type": "ui_text",
+        "z": "c4bc86ae.bc827",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Two",
+        "label": "value:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 778.2000122070312,
+        "y": 296.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "2b303b29.3c3b44",
+        "type": "ui_text",
+        "z": "c4bc86ae.bc827",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "Three",
+        "label": "Value:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 781.2000122070312,
+        "y": 362.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "87748a02.f6ea4",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "One",
+        "func": "if (msg.payload.key==\"One\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 611.9000091552734,
+        "y": 200.1999969482422,
+        "wires": [
+            [
+                "6d325cbd.401b1c",
+                "2b575fe7.2d155"
+            ]
+        ]
+    },
+    {
+        "id": "ee4812a4.e9643",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "Two",
+        "func": "if (msg.payload.key==\"Two\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 612.2000122070312,
+        "y": 259.20001220703125,
+        "wires": [
+            [
+                "b94dbd69.a6a6f8",
+                "9bb349a9.425a2"
+            ]
+        ]
+    },
+    {
+        "id": "66474ff4.6c462",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "Three",
+        "func": "if (msg.payload.key==\"Three\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 611.2000122070312,
+        "y": 327.20001220703125,
+        "wires": [
+            [
+                "2b303b29.3c3b44",
+                "8f197c18.98dcf8"
+            ]
+        ]
+    },
+    {
+        "id": "2b575fe7.2d155",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "One",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 775.9000244140625,
+        "y": 184.1999969482422,
+        "wires": []
+    },
+    {
+        "id": "9bb349a9.425a2",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Two",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 778.2000122070312,
+        "y": 258.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "8f197c18.98dcf8",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Three",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 781.2000122070312,
+        "y": 326.20001220703125,
+        "wires": []
+    },
+    {
+        "id": "974a7c92.c72228",
+        "type": "comment",
+        "z": "c4bc86ae.bc827",
+        "name": "What does it do?",
+        "info": "This flow receives a JSON string\nCreates a JSON object (should contain array of objects)\nSplits this array\nTheses partial messages get filtered for each UI element\n",
+        "x": 261.90000915527344,
+        "y": 332.59999084472656,
+        "wires": []
+    },
+    {
+        "id": "26596680.efe712",
+        "type": "websocket-client",
+        "z": "",
+        "path": "ws://127.0.0.1:5678/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "b9cca87c.2d0418",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "3ba66566.ed74ca",
+        "order": 1,
+        "disp": true,
+        "width": 6
+    },
+    {
+        "id": "3ba66566.ed74ca",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
