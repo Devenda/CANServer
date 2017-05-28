@@ -1,9 +1,6 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
 
-import asyncio
-import canopen
-
 
 class CANObject(object):
     def __init__(self, node, key, mode=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
@@ -33,4 +30,3 @@ class CANObject(object):
         if self.mode == 'sdo':
             data = str(canNode.sdo[self.key].raw)
             return data
-            # return None

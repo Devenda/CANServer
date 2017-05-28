@@ -11,15 +11,40 @@ import CANObject
 
 class CANServer(object):
     def __init__(self):
-        self.CANObjects = []
+        self.CAN_SDO_Objects = []
+        self.CAN_PDO_Objects = []
+        self.pdoReady = False
+        self.pdoDataDict = dict()
         self.nodeNo = 0
         self.node = None
 
     def initNetwork(self):
+        pdoClear = False
         network = canopen.Network()
+
         self.node = network.add_node(
-            38, '/home/pi/CAN/CAN Driver/Driver/os123xes.eds')
+            38, '/home/pi/CAN/CANServer/os123xes.eds')
         network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+
+        # Setup PDO, SDO not needed
+        for co in self.CAN_PDO_Objects:
+            if not pdoClear:
+                self.node.pdo.tx[1].clear()
+                pdoClear = True
+            self.node.pdo.tx[1].add_variable(co.key)
+            self.node.pdo.tx[1].add_callback(self.pdo_Callback)
+            self.node.pdo.tx[1].trans_type = 1
+            self.node.pdo.tx[1].enabled = True
+        pdoClear = False  # New config will be saved
+        # Save config
+        self.node.nmt.state = 'PRE-OPERATIONAL'
+        self.node.pdo.save()
+
+        # Set sync
+        network.sync.start(0.01)
+
+        # Run
+        self.node.nmt.state = 'OPERATIONAL'
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
@@ -37,15 +62,35 @@ class CANServer(object):
                 self.nodeNo = cod["node"]
             # node = None, because node not yet initialized
             print(cod)
-            self.CANObjects.append(CANObject.CANObject(cod["node"], cod["key"], cod["mode"],
-                                                       cod["toMin"], cod["toMax"],
-                                                       cod["fromMin"], cod["fromMax"]))
+
+            # save can objects to correct list (filter on mode, sdo, pdo)
+            if cod["mode"] == 'SDO':
+                self.CAN_SDO_Objects.append(CANObject.CANObject(cod["node"], cod["key"], cod["mode"],
+                                                                cod["toMin"], cod["toMax"],
+                                                                cod["fromMin"], cod["fromMax"]))
+            elif cod["mode"] == 'PDO':
+                self.CAN_PDO_Objects.append(CANObject.CANObject(cod["node"], cod["key"], cod["mode"],
+                                                                cod["toMin"], cod["toMax"],
+                                                                cod["fromMin"], cod["fromMax"]))
+            else:
+                print('Error, mode: ', cod["mode"], ' unknown!')
         # Init network, start driver
         self.initNetwork()
 
+    def pdo_Callback(self, message):
+        coDict = dict()
+        for co in self.CAN_PDO_Objects:
+            print(message[co.key].raw)
+            coDict[co.key] = message[co.key].raw
+        self.pdoDataDict = coDict
+        self.pdoReady = True
+
     async def producer(self):
         coDict = dict()
-        # for co in self.CANObjects:
+
+        if self.pdoReady:
+            coDict.update(self.pdoDataDict)
+        # for co in self.CAN_SDO_Objects:
         #     print('co key found:')
         #     print(co.key)
         #     print('co value:')
@@ -81,8 +126,9 @@ class CANServer(object):
 
 
 cs = CANServer()
-start_server = websockets.serve(cs.handler, '127.0.0.1', 5678) # For windows PC
-#start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
+start_server = websockets.serve(
+    cs.handler, '127.0.0.1', 5678)  # For windows PC
+# start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
