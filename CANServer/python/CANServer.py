@@ -3,7 +3,6 @@
 
 import json
 import asyncio
-import random
 import websockets
 import canopen
 import CANObject
@@ -14,6 +13,7 @@ class CANServer(object):
         self.CANObjects = []
         self.nodeNo = 0
         self.node = None
+        self.index = 0
 
     def initNetwork(self):
         network = canopen.Network()
@@ -44,12 +44,16 @@ class CANServer(object):
         self.initNetwork()
 
     async def producer(self):
-        coDict = dict()
-        for co in self.CANObjects:
-            coDict[co.key] = await co.getData(self.node)
         await asyncio.sleep(0.5)
-        print(json.dumps(coDict))
-        return json.dumps(coDict)
+        values = [10, 1000, 3000]
+
+        if self.index <= 2:
+            print(values[self.index])
+            return values[self.index]
+        else:
+            self.index = 0
+            print(values[self.index])
+            return values[self.index]
 
     async def consumer_handler(self, websocket):
         while True:
