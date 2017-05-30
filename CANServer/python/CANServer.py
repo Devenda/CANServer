@@ -45,17 +45,10 @@ class CANServer(object):
 
     async def producer(self):
         coDict = dict()
-        # for co in self.CANObjects:
-        #     print('co key found:')
-        #     print(co.key)
-        #     print('co value:')
-        #     print(await co.getData(self.node))
-        #     coDict[co.key] = await co.getData(self.node)
-        # await asyncio.sleep(0.5)
-        # print(json.dumps(coDict))
-        # return json.dumps(coDict)
-        coDict = {'One': 1, 'Two': 2, 'Three': 3}
+        for co in self.CANObjects:
+            coDict[co.key] = await co.getData(self.node)
         await asyncio.sleep(0.5)
+        print(json.dumps(coDict))
         return json.dumps(coDict)
 
     async def consumer_handler(self, websocket):
@@ -81,8 +74,9 @@ class CANServer(object):
 
 
 cs = CANServer()
-start_server = websockets.serve(cs.handler, '127.0.0.1', 5678) # For windows PC
-#start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
+start_server = websockets.serve(
+    cs.handler, '127.0.0.1', 5678)  # For windows PC
+# start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
