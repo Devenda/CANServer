@@ -13,8 +13,13 @@ class CANServer(object):
     def __init__(self):
         self.CAN_SDO_Objects = []
         self.CAN_PDO_Objects = []
+
         self.pdoReady = False
         self.pdoDataDict = dict()
+
+        self.sdoReady = False
+        self.sdoDataDict = dict()
+
         self.nodeNo = 0
         self.node = None
 
@@ -45,6 +50,14 @@ class CANServer(object):
 
         # Run
         self.node.nmt.state = 'OPERATIONAL'
+
+    # retrieves sdo data each second
+    async def get_sdo_data(self):
+        coDict = dict()
+        await asyncio.sleep(1)
+        for co in self.CAN_SDO_Objects:
+            coDict[co.key] = co.getData()
+        self.sdoDataDict = coDict
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
@@ -85,22 +98,17 @@ class CANServer(object):
         self.pdoDataDict = coDict
         self.pdoReady = True
 
+    def sdo_Callback(self):
+        self.sdoReady = True
+
     async def producer(self):
         coDict = dict()
 
         if self.pdoReady:
             coDict.update(self.pdoDataDict)
-        # for co in self.CAN_SDO_Objects:
-        #     print('co key found:')
-        #     print(co.key)
-        #     print('co value:')
-        #     print(await co.getData(self.node))
-        #     coDict[co.key] = await co.getData(self.node)
-        # await asyncio.sleep(0.5)
-        # print(json.dumps(coDict))
-        # return json.dumps(coDict)
-        coDict = {'One': 1, 'Two': 2, 'Three': 3}
-        await asyncio.sleep(0.5)
+        if self.sdoReady:
+            coDict.update(self.sdoDataDict)
+
         return json.dumps(coDict)
 
     async def consumer_handler(self, websocket):
@@ -130,5 +138,10 @@ start_server = websockets.serve(
     cs.handler, '127.0.0.1', 5678)  # For windows PC
 # start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+loop = asyncio.get_event_loop()
+
+sdoDataTask = loop.create_task(cs.get_sdo_data())
+sdoDataTask.add_done_callback(cs.sdo_Callback)
+
+loop.run_until_complete(start_server)
+loop.run_forever()
