@@ -45,15 +45,18 @@ class CANServer(object):
 
     async def producer(self):
         await asyncio.sleep(0.5)
-        values = [10, 1000, 3000]
+        values = [1, 10, 100, 1000, 10000, 100000, 1000000]
 
-        if self.index <= 2:
-            print(values[self.index])
-            return values[self.index]
+        if self.index <= 6:
+            out = values[self.index]
+            self.index += 1
+            print(out)
+            return str(out)
         else:
             self.index = 0
-            print(values[self.index])
-            return values[self.index]
+            out = 0
+            print(out)
+            return str(out)
 
     async def consumer_handler(self, websocket):
         while True:
