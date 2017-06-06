@@ -2,7 +2,7 @@
     {
         "node": 36,
         "key": "Motor Speed",
-        "mode": "SDO",
+        "mode": "sdo",
         "toMin": -12000,
         "toMax": 12000,
         "fromMin": -32768,

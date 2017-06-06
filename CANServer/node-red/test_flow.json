@@ -3,15 +3,16 @@
         "id": "c457c91e.98758",
         "type": "websocket in",
         "z": "c4bc86ae.bc827",
-        "name": "Test socket",
+        "name": "RPi Websocket",
         "server": "",
         "client": "26596680.efe712",
-        "x": 92.90000915527344,
+        "x": 112.90000915527344,
         "y": 68,
         "wires": [
             [
                 "4bfd4d34.3080a4",
-                "4b2b89b2.a75f4"
+                "4b2b89b2.a75f4",
+                "2f26df62.7c6aa8"
             ]
         ]
     },
@@ -52,39 +53,12 @@
         "y": 134.59999084472656,
         "wires": [
             [
-                "aa867c7e.b620b8",
-                "5064e98d.a955b8"
-            ]
-        ]
-    },
-    {
-        "id": "aa867c7e.b620b8",
-        "type": "split",
-        "z": "c4bc86ae.bc827",
-        "name": "",
-        "splt": "\\n",
-        "x": 438.9000244140625,
-        "y": 193.1999969482422,
-        "wires": [
-            [
-                "502eb42e.35dd74",
+                "5064e98d.a955b8",
                 "87748a02.f6ea4",
                 "ee4812a4.e9643",
                 "66474ff4.6c462"
             ]
         ]
-    },
-    {
-        "id": "502eb42e.35dd74",
-        "type": "debug",
-        "z": "c4bc86ae.bc827",
-        "name": "Objects after split",
-        "active": false,
-        "console": "false",
-        "complete": "payload",
-        "x": 662.2000122070312,
-        "y": 126.19999694824219,
-        "wires": []
     },
     {
         "id": "4b2b89b2.a75f4",
@@ -135,7 +109,7 @@
         "type": "function",
         "z": "c4bc86ae.bc827",
         "name": "One",
-        "func": "if (msg.payload.key==\"One\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "func": "msg.payload = msg.payload.One;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 611.9000091552734,
@@ -152,7 +126,7 @@
         "type": "function",
         "z": "c4bc86ae.bc827",
         "name": "Two",
-        "func": "if (msg.payload.key==\"Two\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "func": "msg.payload = msg.payload.Two;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 612.2000122070312,
@@ -169,7 +143,7 @@
         "type": "function",
         "z": "c4bc86ae.bc827",
         "name": "Three",
-        "func": "if (msg.payload.key==\"Three\"){\n    msg.payload = msg.payload.value;\n    return msg;\n}\n    \n",
+        "func": "msg.payload = msg.payload.Three;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 611.2000122070312,
@@ -223,8 +197,34 @@
         "z": "c4bc86ae.bc827",
         "name": "What does it do?",
         "info": "This flow receives a JSON string\nCreates a JSON object (should contain array of objects)\nSplits this array\nTheses partial messages get filtered for each UI element\n",
-        "x": 261.90000915527344,
-        "y": 332.59999084472656,
+        "x": 804.9000244140625,
+        "y": 49.59996032714844,
+        "wires": []
+    },
+    {
+        "id": "2f26df62.7c6aa8",
+        "type": "ui_gauge",
+        "z": "c4bc86ae.bc827",
+        "name": "",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1000100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 266.90000915527344,
+        "y": 389.99998474121094,
         "wires": []
     },
     {

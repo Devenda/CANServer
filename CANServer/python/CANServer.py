@@ -53,6 +53,8 @@ class CANServer(object):
 
     # retrieves sdo data each second
     async def get_sdo_data(self):
+        print("Getting sdo data for")
+        print(self.CAN_SDO_Objects)
         coDict = dict()
         await asyncio.sleep(1)
         for co in self.CAN_SDO_Objects:
@@ -61,6 +63,7 @@ class CANServer(object):
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
+        print("cons called")
         canObjectList = json.loads(message)
         print('Config received:', canObjectList)
         # Get each CANObject from webpage
@@ -98,7 +101,7 @@ class CANServer(object):
         self.pdoDataDict = coDict
         self.pdoReady = True
 
-    def sdo_Callback(self):
+    def sdo_Callback(self, message):
         self.sdoReady = True
 
     async def producer(self):
@@ -134,9 +137,9 @@ class CANServer(object):
 
 
 cs = CANServer()
-start_server = websockets.serve(
-    cs.handler, '127.0.0.1', 5678)  # For windows PC
-# start_server = websockets.serve(cs.handler, '192.168.1.123', 5678) # For PI
+# start_server = websockets.serve(cs.handler, '127.0.0.1', 5678)  # For
+# windows PC
+start_server = websockets.serve(cs.handler, '192.168.1.123', 5678)  # For PI
 
 loop = asyncio.get_event_loop()
 
