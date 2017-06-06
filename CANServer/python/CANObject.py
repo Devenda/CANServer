@@ -25,8 +25,10 @@ class CANObject(object):
         # Convert the 0-1 range into a value in the right range.
         return self.toMin + (valueScaled * toSpan)
 
-    async def getData(self, canNode):
+    def getData(self, canNode):
         print('mode', self.mode)
-        if self.mode == 'sdo':
+        if self.mode == 'SDO':
             data = str(canNode.sdo[self.key].raw)
             return data
+        else:
+            print("Mode not found:", self.mode)

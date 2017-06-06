@@ -23,7 +23,7 @@ class CANServer(object):
         self.nodeNo = 0
         self.node = None
 
-    async def initNetwork(self):
+    def initNetwork(self):
         pdoClear = False
         network = canopen.Network()
 
@@ -31,7 +31,7 @@ class CANServer(object):
         network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
         # Start SDO timer
-        threading.Timer(1, await self.sdo_Callback).start()
+        threading.Timer(1, self.sdo_Callback).start()
 
         # Setup PDO
         for co in self.CAN_PDO_Objects:
@@ -54,14 +54,14 @@ class CANServer(object):
         self.node.nmt.state = 'OPERATIONAL'
 
     # retrieves all sdo data
-    async def get_sdo_data(self):
+    def get_sdo_data(self):
         print("Getting sdo data for")
         print(self.CAN_SDO_Objects)
         coDict = dict()
         for co in self.CAN_SDO_Objects:
             print(co.key)
-            print(await co.getData(self.node))
-            coDict[co.key] = await co.getData(self.node)
+            print(co.getData(self.node))
+            coDict[co.key] = co.getData(self.node)
         self.sdoDataDict = coDict
 
     def pdo_Callback(self, message):
@@ -73,13 +73,13 @@ class CANServer(object):
         self.pdoDataDict = coDict
         self.pdoReady = True
 
-    async def sdo_Callback(self):
+    def sdo_Callback(self):
         print("SDO callback called")
-        await self.get_sdo_data()
+        self.get_sdo_data()
         self.sdoReady = True
 
         # Restart SDO timer
-        threading.Timer(1, await self.sdo_Callback).start()
+        threading.Timer(1, self.sdo_Callback).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
