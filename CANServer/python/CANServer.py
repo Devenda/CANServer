@@ -3,10 +3,10 @@
 
 import json
 import asyncio
+import threading
 import websockets
 import canopen
 import CANObject
-import threading
 
 
 class CANServer(object):
@@ -23,16 +23,15 @@ class CANServer(object):
         self.nodeNo = 0
         self.node = None
 
-    def initNetwork(self):
+    async def initNetwork(self):
         pdoClear = False
         network = canopen.Network()
 
-        self.node = network.add_node(
-            38, 'os123xes.eds')
+        self.node = network.add_node(38, 'os123xes.eds')
         network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
         # Start SDO timer
-        threading.Timer(1, self.sdo_Callback).start()
+        threading.Timer(1, await self.sdo_Callback).start()
 
         # Setup PDO
         for co in self.CAN_PDO_Objects:
@@ -55,12 +54,14 @@ class CANServer(object):
         self.node.nmt.state = 'OPERATIONAL'
 
     # retrieves all sdo data
-    def get_sdo_data(self):
+    async def get_sdo_data(self):
         print("Getting sdo data for")
         print(self.CAN_SDO_Objects)
         coDict = dict()
         for co in self.CAN_SDO_Objects:
-            coDict[co.key] = co.getData()
+            print(co.key)
+            print(await co.getData(self.node))
+            coDict[co.key] = await co.getData(self.node)
         self.sdoDataDict = coDict
 
     def pdo_Callback(self, message):
@@ -72,13 +73,13 @@ class CANServer(object):
         self.pdoDataDict = coDict
         self.pdoReady = True
 
-    def sdo_Callback(self):
+    async def sdo_Callback(self):
         print("SDO callback called")
-        self.get_sdo_data()
+        await self.get_sdo_data()
         self.sdoReady = True
 
         # Restart SDO timer
-        threading.Timer(1, self.sdo_Callback).start()
+        threading.Timer(1, await self.sdo_Callback).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
@@ -113,7 +114,6 @@ class CANServer(object):
         self.initNetwork()
 
     async def producer(self):
-        print("Run prod")
         coDict = dict()
 
         if self.pdoReady:
@@ -121,6 +121,9 @@ class CANServer(object):
         if self.sdoReady:
             coDict.update(self.sdoDataDict)
 
+        await asyncio.sleep(1)
+        print(coDict)
+        print(json.dumps(coDict))
         return json.dumps(coDict)
 
     async def consumer_handler(self, websocket):
