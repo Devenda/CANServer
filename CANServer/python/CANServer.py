@@ -3,10 +3,10 @@
 
 import json
 import asyncio
-import random
 import websockets
 import canopen
 import CANObject
+import threading
 
 
 class CANServer(object):
@@ -28,10 +28,13 @@ class CANServer(object):
         network = canopen.Network()
 
         self.node = network.add_node(
-            38, '/home/pi/CAN/CANServer/os123xes.eds')
+            38, 'os123xes.eds')
         network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
-        # Setup PDO, SDO not needed
+        # Start SDO timer
+        threading.Timer(1, self.sdo_Callback).start()
+
+        # Setup PDO
         for co in self.CAN_PDO_Objects:
             if not pdoClear:
                 self.node.pdo.tx[1].clear()
@@ -51,19 +54,35 @@ class CANServer(object):
         # Run
         self.node.nmt.state = 'OPERATIONAL'
 
-    # retrieves sdo data each second
-    async def get_sdo_data(self):
+    # retrieves all sdo data
+    def get_sdo_data(self):
         print("Getting sdo data for")
         print(self.CAN_SDO_Objects)
         coDict = dict()
-        await asyncio.sleep(1)
         for co in self.CAN_SDO_Objects:
             coDict[co.key] = co.getData()
         self.sdoDataDict = coDict
 
+    def pdo_Callback(self, message):
+        print("PDO callback called")
+        coDict = dict()
+        for co in self.CAN_PDO_Objects:
+            print(message[co.key].raw)
+            coDict[co.key] = message[co.key].raw
+        self.pdoDataDict = coDict
+        self.pdoReady = True
+
+    def sdo_Callback(self):
+        print("SDO callback called")
+        self.get_sdo_data()
+        self.sdoReady = True
+
+        # Restart SDO timer
+        threading.Timer(1, self.sdo_Callback).start()
+
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
-        print("cons called")
+        print("Run cons")
         canObjectList = json.loads(message)
         print('Config received:', canObjectList)
         # Get each CANObject from webpage
@@ -93,18 +112,8 @@ class CANServer(object):
         # Init network, start driver
         self.initNetwork()
 
-    def pdo_Callback(self, message):
-        coDict = dict()
-        for co in self.CAN_PDO_Objects:
-            print(message[co.key].raw)
-            coDict[co.key] = message[co.key].raw
-        self.pdoDataDict = coDict
-        self.pdoReady = True
-
-    def sdo_Callback(self, message):
-        self.sdoReady = True
-
     async def producer(self):
+        print("Run prod")
         coDict = dict()
 
         if self.pdoReady:
@@ -142,9 +151,5 @@ cs = CANServer()
 start_server = websockets.serve(cs.handler, '192.168.1.123', 5678)  # For PI
 
 loop = asyncio.get_event_loop()
-
-sdoDataTask = loop.create_task(cs.get_sdo_data())
-sdoDataTask.add_done_callback(cs.sdo_Callback)
-
 loop.run_until_complete(start_server)
 loop.run_forever()
