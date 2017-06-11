@@ -3,10 +3,12 @@
 
 
 class CANObject(object):
-    def __init__(self, node, key, mode=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
+    # todo default bij None?
+    def __init__(self, node, key, mode=None, updateRate=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
         self.node = node
         self.key = key
         self.mode = mode
+        self.updateRate = updateRate
 
         self.toMin = toMin
         self.toMax = toMax

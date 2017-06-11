@@ -3,6 +3,7 @@
         "node": 36,
         "key": "Motor Speed",
         "mode": "SDO",
+        "updateRate": "1.5",
         "toMin": -12000,
         "toMax": 12000,
         "fromMin": -32768,
