@@ -33,4 +33,4 @@ class CANObject(object):
             data = str(canNode.sdo[self.key].raw)
             return data
         else:
-            print("Mode not found:", self.mode)
+            print("getData called on non SDO object", self.mode)
