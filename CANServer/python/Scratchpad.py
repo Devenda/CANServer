@@ -45,7 +45,7 @@ network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
 
 # # Read a variable using SDO
-print(node.sdo[0x3464].raw) #==> device name
+# print(node.sdo[0x3464].raw) #==> device name
 # while True:
 #     # # product id
 #     # print(node.sdo[0x3464].raw, "Bits", node.sdo[0x3464].bits)
@@ -60,12 +60,24 @@ print(node.sdo[0x3464].raw) #==> device name
 
 #     time.sleep(0.1)
 # Read values, but most of the time we get type error
-
+def pdo_Callback(self, message):
+        print("PDO callback called")
+        print(message)
 
 #Try PDO config
 node.pdo.tx[1].clear()
 # node.pdo.tx[1].add_variable(0x1018, 1)  # Vendor Id
 node.pdo.tx[1].add_variable('Motor Speed')  # get RPM
+node.pdo.tx[1].add_callback(pdo_Callback)
+node.pdo.tx[1].trans_type = 1
+node.pdo.tx[1].enabled = True
+
+node.nmt.state = 'PRE-OPERATIONAL'
+node.pdo.save()
+
+network.sync.start(0.01)
+# Run
+node.nmt.state = 'OPERATIONAL'
 # node.pdo.tx[1].trans_type = 1
 # node.pdo.tx[1].enabled = True
 # node.pdo.read()

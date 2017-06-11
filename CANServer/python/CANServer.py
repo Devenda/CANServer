@@ -56,11 +56,8 @@ class CANServer(object):
     # retrieves all sdo data
     def get_sdo_data(self):
         print("Getting sdo data for")
-        print(self.CAN_SDO_Objects)
         coDict = dict()
         for co in self.CAN_SDO_Objects:
-            print(co.key)
-            print(co.getData(self.node))
             coDict[co.key] = co.getData(self.node)
         self.sdoDataDict = coDict
 
@@ -68,7 +65,6 @@ class CANServer(object):
         print("PDO callback called")
         coDict = dict()
         for co in self.CAN_PDO_Objects:
-            print(message[co.key].raw)
             coDict[co.key] = message[co.key].raw
         self.pdoDataDict = coDict
         self.pdoReady = True
@@ -122,8 +118,6 @@ class CANServer(object):
             coDict.update(self.sdoDataDict)
 
         await asyncio.sleep(1)
-        print(coDict)
-        print(json.dumps(coDict))
         return json.dumps(coDict)
 
     async def consumer_handler(self, websocket):

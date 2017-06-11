@@ -5,14 +5,13 @@
         "z": "c4bc86ae.bc827",
         "name": "RPi Websocket",
         "server": "",
-        "client": "26596680.efe712",
-        "x": 112.90000915527344,
-        "y": 68,
+        "client": "ab67b9a2.c3ad78",
+        "x": 114.90000915527344,
+        "y": 64.00000095367432,
         "wires": [
             [
                 "4bfd4d34.3080a4",
-                "4b2b89b2.a75f4",
-                "2f26df62.7c6aa8"
+                "4b2b89b2.a75f4"
             ]
         ]
     },
@@ -26,22 +25,6 @@
         "complete": "payload",
         "x": 455.9000244140625,
         "y": 85.19999694824219,
-        "wires": []
-    },
-    {
-        "id": "6d325cbd.401b1c",
-        "type": "ui_text",
-        "z": "c4bc86ae.bc827",
-        "group": "b9cca87c.2d0418",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "name": "One",
-        "label": "Value:",
-        "format": "{{msg.payload}}",
-        "layout": "row-left",
-        "x": 776.9000244140625,
-        "y": 222.40000915527344,
         "wires": []
     },
     {
@@ -108,16 +91,16 @@
         "id": "87748a02.f6ea4",
         "type": "function",
         "z": "c4bc86ae.bc827",
-        "name": "One",
-        "func": "msg.payload = msg.payload.One;\nreturn msg;",
+        "name": "Motor Speed",
+        "func": "if (\"Motor Speed\" in msg.payload){\n    msg.payload = msg.payload[\"Motor Speed\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 611.9000091552734,
+        "x": 631.9000091552734,
         "y": 200.1999969482422,
         "wires": [
             [
-                "6d325cbd.401b1c",
-                "2b575fe7.2d155"
+                "2b575fe7.2d155",
+                "2f26df62.7c6aa8"
             ]
         ]
     },
@@ -159,11 +142,11 @@
         "id": "2b575fe7.2d155",
         "type": "debug",
         "z": "c4bc86ae.bc827",
-        "name": "One",
+        "name": "Motor Speed",
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 775.9000244140625,
+        "x": 795.9000244140625,
         "y": 184.1999969482422,
         "wires": []
     },
@@ -205,7 +188,7 @@
         "id": "2f26df62.7c6aa8",
         "type": "ui_gauge",
         "z": "c4bc86ae.bc827",
-        "name": "",
+        "name": "Motor Speed",
         "group": "b9cca87c.2d0418",
         "order": 0,
         "width": 0,
@@ -215,7 +198,7 @@
         "label": "units",
         "format": "{{value}}",
         "min": 0,
-        "max": "1000100",
+        "max": "3500",
         "colors": [
             "#00b500",
             "#e6e600",
@@ -223,15 +206,15 @@
         ],
         "seg1": "",
         "seg2": "",
-        "x": 266.90000915527344,
-        "y": 389.99998474121094,
+        "x": 798.9000129699707,
+        "y": 220.0000057220459,
         "wires": []
     },
     {
-        "id": "26596680.efe712",
+        "id": "ab67b9a2.c3ad78",
         "type": "websocket-client",
         "z": "",
-        "path": "ws://127.0.0.1:5678/",
+        "path": "ws://192.168.1.123:5678/",
         "wholemsg": "false"
     },
     {
