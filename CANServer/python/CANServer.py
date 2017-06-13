@@ -34,6 +34,9 @@ class CANServer(object):
 
         # setup CAN objects
         for co in self.CAN_Objects:
+            # Add key to data dict with initial value
+            self.CAN_Data[co.key] = 0
+
             # Setup PDO
             if co.mode == "PDO":
                 if not pdoClear:
@@ -43,11 +46,14 @@ class CANServer(object):
                 self.node.pdo.tx[1].add_callback(self.pdo_Callback)
                 self.node.pdo.tx[1].trans_type = 1
                 self.node.pdo.tx[1].enabled = True
+            # Setup SDO
             elif co.mode == "SDO":
                 self.sdo_update(co)
             else:
                 print("Error, mode", co.mode, "not know")
-        pdoClear = False  # New config will be saved
+
+        # New config will be saved
+        pdoClear = False
         # Save config
         self.node.nmt.state = 'PRE-OPERATIONAL'
         self.node.pdo.save()
@@ -61,19 +67,21 @@ class CANServer(object):
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
         print("PDO callback called")
-        coDict = dict()
+        # Add data to Data dict
         for co in self.CAN_Objects:
-            coDict[co.key] = message[co.key].raw
-        self.pdoDataDict = coDict
-        self.pdoReady = True
+            if co.mode == "pdo":
+                self.CAN_Data[co.key] = message[co.key].raw
 
+        # ToDo send data each time PDO data received
+
+    # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         print("Set update for:", co.key)
-        self.CAN_Objects[co.key] = co.getData(self.node)
+        self.CAN_Data[co.key] = co.getData(self.node)
 
         # Restart SDO timer
-        # ToDo only restart if key is still present
-        threading.Timer(co.updateRate, self.sdo_update(co)).start()
+        if co in self.CAN_Objects:
+            threading.Timer(co.updateRate, self.sdo_update(co)).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
