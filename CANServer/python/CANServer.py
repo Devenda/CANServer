@@ -3,14 +3,17 @@
 
 import json
 import asyncio
+import logging
 import threading
-import websockets
 import canopen
 import CANObject
 
 
 class CANServer(object):
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info('Logger Added')
+
         self.CAN_Objects = []
         self.CAN_Data = {}
 
@@ -140,13 +143,3 @@ class CANServer(object):
 
         for task in pending:
             task.cancel()
-
-
-cs = CANServer()
-# start_server = websockets.serve(cs.handler, '127.0.0.1', 5678)  # For
-# windows PC
-start_server = websockets.serve(cs.handler, '192.168.1.123', 5678)  # For PI
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(start_server)
-loop.run_forever()
