@@ -30,7 +30,7 @@ class CANObject(object):
     def getData(self, canNode):
         print('mode', self.mode)
         if self.mode == 'SDO':
-            data = str(canNode.sdo[self.key].raw)
+            data = str(self.translate(canNode.sdo[self.key].raw))
             return data
         else:
             print("getData called on non SDO object", self.mode)
