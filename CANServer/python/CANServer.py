@@ -7,6 +7,7 @@ import logging
 import threading
 import canopen
 import CANObject
+import random
 
 
 class CANServer(object):
@@ -28,12 +29,14 @@ class CANServer(object):
         self.nodeNo = 0
         self.node = None
 
+        self.timercount = 0
+
     def initNetwork(self):
         pdoClear = False
-        network = canopen.Network()
+        # network = canopen.Network()
 
-        self.node = network.add_node(38, 'os123xes.eds')
-        network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+        # self.node = network.add_node(38, 'os123xes.eds')
+        # network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -57,15 +60,15 @@ class CANServer(object):
 
         # New config will be saved
         pdoClear = False
-        # Save config
-        self.node.nmt.state = 'PRE-OPERATIONAL'
-        self.node.pdo.save()
+        # # Save config
+        # self.node.nmt.state = 'PRE-OPERATIONAL'
+        # self.node.pdo.save()
 
-        # Set sync
-        network.sync.start(0.01)
+        # # Set sync
+        # network.sync.start(0.01)
 
-        # Run
-        self.node.nmt.state = 'OPERATIONAL'
+        # # Run
+        # self.node.nmt.state = 'OPERATIONAL'
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
@@ -80,11 +83,12 @@ class CANServer(object):
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         print("Set update for:", co.key)
-        self.CAN_Data[co.key] = co.getData(self.node)
+        self.CAN_Data[co.key] = random.randint(0, 50)  # co.getData(self.node)
 
         # Restart SDO timer
+        print("restarting timer with update rate:", float(co.updateRate))
         if co in self.CAN_Objects:
-            threading.Timer(co.updateRate, self.sdo_update(co)).start()
+            threading.Timer(float(co.updateRate), self.sdo_update, args=(co, )).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
@@ -103,11 +107,10 @@ class CANServer(object):
                 print('Node:', self.nodeNo)
                 self.nodeNo = co["node"]
             # node = None, because node not yet initialized
-            print(co)
 
             # save can objects
             self.CAN_Objects.append(CANObject.CANObject(co["node"], co["key"], co["mode"],
-                                                        co["toMin"], co["updateRate"], co["toMax"],
+                                                        co["updateRate"], co["toMin"], co["toMax"],
                                                         co["fromMin"], co["fromMax"]))
             # Init CAN Data dict with all keys and data = 0
             self.CAN_Data[co["key"]] = "0"

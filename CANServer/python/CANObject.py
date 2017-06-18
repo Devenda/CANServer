@@ -1,5 +1,6 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
+import random
 
 
 class CANObject(object):
