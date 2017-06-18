@@ -33,10 +33,10 @@ class CANServer(object):
 
     def initNetwork(self):
         pdoClear = False
-        # network = canopen.Network()
+        network = canopen.Network()
 
-        # self.node = network.add_node(38, 'os123xes.eds')
-        # network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+        self.node = network.add_node(38, 'os123xes.eds')
+        network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -60,15 +60,15 @@ class CANServer(object):
 
         # New config will be saved
         pdoClear = False
-        # # Save config
-        # self.node.nmt.state = 'PRE-OPERATIONAL'
-        # self.node.pdo.save()
+        # Save config
+        self.node.nmt.state = 'PRE-OPERATIONAL'
+        self.node.pdo.save()
 
-        # # Set sync
-        # network.sync.start(0.01)
+        # Set sync
+        network.sync.start(0.01)
 
-        # # Run
-        # self.node.nmt.state = 'OPERATIONAL'
+        # Run
+        self.node.nmt.state = 'OPERATIONAL'
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
