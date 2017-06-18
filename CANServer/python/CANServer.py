@@ -113,7 +113,7 @@ class CANServer(object):
             self.CAN_Data[co["key"]] = "0"
 
             # set update rate to fastest rate of all co
-            if co["updateRate"] < self.updateRate:
+            if float(co["updateRate"]) < self.updateRate:
                 self.updateRate = co["updateRate"]
         # Init network, start driver
         self.initNetwork()
