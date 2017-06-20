@@ -26,11 +26,13 @@ class CANObject(object):
         valueScaled = float(value - self.fromMin) / float(fromSpan)
 
         # Convert the 0-1 range into a value in the right range.
-        return self.toMin + (valueScaled * toSpan)
+        return int(round(self.toMin + (valueScaled * toSpan)))
 
     def getData(self, canNode):
         print('mode', self.mode)
         if self.mode == 'SDO':
+            print(canNode.sdo[self.key].raw)
+            print(self.translate(canNode.sdo[self.key].raw))
             data = str(self.translate(canNode.sdo[self.key].raw))
             return data
         else:

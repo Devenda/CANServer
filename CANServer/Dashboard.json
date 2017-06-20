@@ -3,10 +3,20 @@
         "node": 36,
         "key": "Motor Speed",
         "mode": "SDO",
-        "updateRate": "1.5",
+        "updateRate": "1",
         "toMin": -12000,
         "toMax": 12000,
         "fromMin": -32768,
         "fromMax": 32768
+    },
+    {
+        "node": 36,
+        "key": "Current (RMS)",
+        "mode": "SDO",
+        "updateRate": "2",
+        "toMin": 0,
+        "toMax": 1000,
+        "fromMin": 0,
+        "fromMax": 10000
     }
 ]
