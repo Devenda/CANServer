@@ -25,48 +25,47 @@ class CANServer(object):
         self.node = None
 
         self.q = queue.Queue(maxsize=0)
-
-    def initNetwork(self):
-        pdoClear = False
-        network = canopen.Network()
-
-        self.node = network.add_node(38, 'os123xes.eds')
-        network.connect(channel='can0', bustype='socketcan', bitrate=125000)
-
         # Starting CAN worker thread
         cw = threading.Thread(target=self.can_worker)
         cw.daemon = True
         cw.start()
 
+    def initNetwork(self):
+
+        # network = canopen.Network()
+        # self.node = network.add_node(38, 'os123xes.eds')
+        # network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+
         # setup CAN objects
         for co in self.CAN_Objects:
             # Add key to data dict with initial value
             self.CAN_Data[co.key] = 0
+            self.sdo_update(co)
 
             # Setup PDO
-            if co.mode == "PDO":
-                if not pdoClear:
-                    self.node.pdo.tx[1].clear()
-                    pdoClear = True
-                self.node.pdo.tx[1].add_variable(co.key)
-                self.node.pdo.tx[1].add_callback(self.pdo_Callback)
-                self.node.pdo.tx[1].trans_type = 1
-                self.node.pdo.tx[1].enabled = True
+            # if co.mode == "PDO":
+            #     if not pdoClear:
+            #         self.node.pdo.tx[1].clear()
+            #         pdoClear = True
+            #     self.node.pdo.tx[1].add_variable(co.key)
+            #     self.node.pdo.tx[1].add_callback(self.pdo_Callback)
+            #     self.node.pdo.tx[1].trans_type = 1
+            #     self.node.pdo.tx[1].enabled = True
 
-                # Save config
-                self.node.nmt.state = 'PRE-OPERATIONAL'
-                self.node.pdo.save()
+            #     # Save config
+            #     self.node.nmt.state = 'PRE-OPERATIONAL'
+            #     self.node.pdo.save()
 
-                # Set sync
-                network.sync.start(0.01)
+            #     # Set sync
+            #     network.sync.start(0.01)
 
-                # Run
-                self.node.nmt.state = 'OPERATIONAL'
-            # Setup SDO
-            elif co.mode == "SDO":
-                self.sdo_update(co)
-            else:
-                print("Error, mode", co.mode, "not know")
+            #     # Run
+            #     self.node.nmt.state = 'OPERATIONAL'
+            # # Setup SDO
+            # elif co.mode == "SDO":
+            #     self.sdo_update(co)
+            # else:
+            #     print("Error, mode", co.mode, "not know")
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
@@ -81,9 +80,10 @@ class CANServer(object):
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
         while True:
+            # print("Number of active threads:", threading.active_count())
             co = self.q.get()
-            print("Set update for:", co.key)
-            self.CAN_Data[co.key] = co.getData(self.node)
+            # print("Set update for:", co.key)
+            self.CAN_Data[co.key] = random.randint(0, 50)
             self.q.task_done()
 
     # Gets called after a time defined by the update rate of the SDO object
@@ -92,7 +92,7 @@ class CANServer(object):
         self.q.put(co)
 
         # Restart SDO timer
-        print("restarting timer with update rate:", float(co.updateRate))
+        # print("restarting timer with update rate:", float(co.updateRate))
         if co in self.CAN_Objects:
             threading.Timer(float(co.updateRate),
                             self.sdo_update, args=(co, )).start()
