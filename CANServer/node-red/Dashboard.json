@@ -1,0 +1,202 @@
+[
+    {
+        "id": "c457c91e.98758",
+        "type": "websocket in",
+        "z": "c4bc86ae.bc827",
+        "name": "RPi Websocket",
+        "server": "",
+        "client": "ab67b9a2.c3ad78",
+        "x": 110.9000129699707,
+        "y": 55.000000953674316,
+        "wires": [
+            [
+                "4bfd4d34.3080a4",
+                "4b2b89b2.a75f4"
+            ]
+        ]
+    },
+    {
+        "id": "5064e98d.a955b8",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Pure JSON",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 455.9000244140625,
+        "y": 85.19999694824219,
+        "wires": []
+    },
+    {
+        "id": "4bfd4d34.3080a4",
+        "type": "json",
+        "z": "c4bc86ae.bc827",
+        "name": "",
+        "x": 269.9000244140625,
+        "y": 134.59999084472656,
+        "wires": [
+            [
+                "5064e98d.a955b8",
+                "87748a02.f6ea4",
+                "ee4812a4.e9643"
+            ]
+        ]
+    },
+    {
+        "id": "4b2b89b2.a75f4",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "JSON String",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 282.20001220703125,
+        "y": 32.19999694824219,
+        "wires": []
+    },
+    {
+        "id": "87748a02.f6ea4",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "Motor Speed",
+        "func": "if (\"Motor Speed\" in msg.payload){\n    msg.payload = msg.payload[\"Motor Speed\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 638.9000091552734,
+        "y": 224.20004081726074,
+        "wires": [
+            [
+                "2b575fe7.2d155",
+                "2f26df62.7c6aa8"
+            ]
+        ]
+    },
+    {
+        "id": "ee4812a4.e9643",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "BDI",
+        "func": "if (\"BDI\" in msg.payload){\n    msg.payload = msg.payload[\"BDI\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 618.2000389099121,
+        "y": 150.20001029968262,
+        "wires": [
+            [
+                "13d92f8c.bfcbb",
+                "7f6d430.314cfbc"
+            ]
+        ]
+    },
+    {
+        "id": "2b575fe7.2d155",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Motor Speed",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 802.9000244140625,
+        "y": 208.20004081726074,
+        "wires": []
+    },
+    {
+        "id": "974a7c92.c72228",
+        "type": "comment",
+        "z": "c4bc86ae.bc827",
+        "name": "What does it do?",
+        "info": "This flow receives a JSON string\nCreates a JSON object (should contain array of objects)\nSplits this array\nTheses partial messages get filtered for each UI element\n",
+        "x": 804.9000244140625,
+        "y": 49.59996032714844,
+        "wires": []
+    },
+    {
+        "id": "2f26df62.7c6aa8",
+        "type": "ui_gauge",
+        "z": "c4bc86ae.bc827",
+        "name": "Motor Speed",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "3500",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 805.9000129699707,
+        "y": 244.00004959106445,
+        "wires": []
+    },
+    {
+        "id": "13d92f8c.bfcbb",
+        "type": "ui_gauge",
+        "z": "c4bc86ae.bc827",
+        "name": "BDI",
+        "group": "b9cca87c.2d0418",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "BDI",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 774.5000114440918,
+        "y": 150.77779388427734,
+        "wires": []
+    },
+    {
+        "id": "7f6d430.314cfbc",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "BDI",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 776,
+        "y": 106,
+        "wires": []
+    },
+    {
+        "id": "ab67b9a2.c3ad78",
+        "type": "websocket-client",
+        "z": "",
+        "path": "ws://192.168.1.123:5678/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "b9cca87c.2d0418",
+        "type": "ui_group",
+        "z": "",
+        "name": "Dashboard",
+        "tab": "3ba66566.ed74ca",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "3ba66566.ed74ca",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Main",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
