@@ -1,0 +1,74 @@
+2017-06-25 19:03:30,588 - root - INFO - Logger setup done, starting web server
+2017-06-25 19:03:30,590 - CANServer - INFO - Logger Added
+2017-06-25 19:03:42,343 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:03:42,347 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:03:57,190 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:03:57,194 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:04:09,849 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:04:09,853 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:04:20,468 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:04:20,473 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished coro=<CANServer.consumer_handler() done, defined at c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py:137> exception=ConnectionClosed('WebSocket connection is closed: code = 1000, no reason.',)>
+Traceback (most recent call last):
+  File "c:\Users\Tinus\Documents\Projects\e-Kart\CAN bus\CANServer\CANServer\python\CANServer.py", line 139, in consumer_handler
+    message = await websocket.recv()
+  File "C:\Users\Tinus\AppData\Local\Programs\Python\Python36-32\lib\site-packages\websockets\protocol.py", line 299, in recv
+    raise ConnectionClosed(self.close_code, self.close_reason)
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1000, no reason.
+2017-06-25 19:07:36,402 - root - INFO - Logger setup done, starting web server
+2017-06-25 19:07:36,403 - CANServer - INFO - Logger Added
+2017-06-25 19:10:00,030 - root - INFO - Logger setup done, starting web server
+2017-06-25 19:10:00,031 - CANServer - INFO - Logger Added
+2017-06-25 19:10:56,813 - root - INFO - Logger setup done, starting web server
+2017-06-25 19:10:56,813 - CANServer - INFO - Logger Added
+2017-06-25 19:12:32,093 - root - INFO - Logger setup done, starting web server
+2017-06-25 19:12:32,094 - CANServer - INFO - Logger Added

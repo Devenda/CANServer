@@ -25,18 +25,17 @@ class CANServer(object):
         self.node = None
 
         self.q = queue.Queue(maxsize=0)
-
-    def initNetwork(self):
-        pdoClear = False
-        network = canopen.Network()
-
-        self.node = network.add_node(38, 'os123xes.eds')
-        network.connect(channel='can0', bustype='socketcan', bitrate=125000)
-
         # Starting CAN worker thread
         cw = threading.Thread(target=self.can_worker)
         cw.daemon = True
         cw.start()
+
+    def initNetwork(self):
+        pdoClear = False
+
+        network = canopen.Network()
+        self.node = network.add_node(38, 'os123xes.eds')
+        network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
         # setup CAN objects
         for co in self.CAN_Objects:
