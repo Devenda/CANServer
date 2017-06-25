@@ -5,9 +5,11 @@ import json
 import asyncio
 import logging
 import threading
+import queue
+import random
 import canopen
 import CANObject
-import random
+
 
 
 class CANServer(object):
@@ -79,6 +81,10 @@ class CANServer(object):
                 self.CAN_Data[co.key] = message[co.key].raw
 
         # ToDo send data each time PDO data received
+
+    def can_worker(self, q):
+        while True:
+            q.get()
 
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
