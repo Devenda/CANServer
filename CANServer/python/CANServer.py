@@ -88,7 +88,7 @@ class CANServer(object):
 
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
-        #push co on CAN worker queue
+        # push co on CAN worker queue
         self.q.put(co)
 
         # Restart SDO timer
