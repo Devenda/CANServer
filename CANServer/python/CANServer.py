@@ -20,18 +20,10 @@ class CANServer(object):
         self.CAN_Objects = []
         self.CAN_Data = {}
 
-        self.updateRate = 1
-
-        self.pdoReady = False
-        self.pdoDataDict = dict()
-
-        self.sdoReady = False
-        self.sdoDataDict = dict()
+        self.updateRate = 1.0  # float()
 
         self.nodeNo = 0
         self.node = None
-
-        self.timercount = 0
 
     def initNetwork(self):
         pdoClear = False
@@ -54,23 +46,21 @@ class CANServer(object):
                 self.node.pdo.tx[1].add_callback(self.pdo_Callback)
                 self.node.pdo.tx[1].trans_type = 1
                 self.node.pdo.tx[1].enabled = True
+
+                # Save config
+                self.node.nmt.state = 'PRE-OPERATIONAL'
+                self.node.pdo.save()
+
+                # Set sync
+                network.sync.start(0.01)
+
+                # Run
+                self.node.nmt.state = 'OPERATIONAL'
             # Setup SDO
             elif co.mode == "SDO":
                 self.sdo_update(co)
             else:
                 print("Error, mode", co.mode, "not know")
-
-        # New config will be saved
-        pdoClear = False
-        # Save config
-        self.node.nmt.state = 'PRE-OPERATIONAL'
-        self.node.pdo.save()
-
-        # Set sync
-        network.sync.start(0.01)
-
-        # Run
-        self.node.nmt.state = 'OPERATIONAL'
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
@@ -89,7 +79,7 @@ class CANServer(object):
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         print("Set update for:", co.key)
-        self.CAN_Data[co.key] = random.randint(0, 50)  # co.getData(self.node)
+        self.CAN_Data[co.key] = co.getData(self.node)
 
         # Restart SDO timer
         print("restarting timer with update rate:", float(co.updateRate))
@@ -122,8 +112,9 @@ class CANServer(object):
             self.CAN_Data[co["key"]] = "0"
 
             # set update rate to fastest rate of all co
-            if float(co["updateRate"]) < self.updateRate:
-                self.updateRate = co["updateRate"]
+            newRate = float(co["updateRate"])
+            if newRate < self.updateRate:
+                self.updateRate = newRate
         # Init network, start driver
         self.initNetwork()
 
