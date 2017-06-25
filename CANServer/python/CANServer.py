@@ -11,7 +11,6 @@ import canopen
 import CANObject
 
 
-
 class CANServer(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -25,12 +24,19 @@ class CANServer(object):
         self.nodeNo = 0
         self.node = None
 
+        self.q = queue.Queue(maxsize=0)
+
     def initNetwork(self):
         pdoClear = False
         network = canopen.Network()
 
         self.node = network.add_node(38, 'os123xes.eds')
         network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+
+        # Starting CAN worker thread
+        cw = threading.Thread(target=self.can_worker)
+        cw.daemon = True
+        cw.start()
 
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -72,19 +78,24 @@ class CANServer(object):
 
         # ToDo send data each time PDO data received
 
-    def can_worker(self, q):
+    # Gets all CAN Objects from the queue and gets there actual data
+    def can_worker(self):
         while True:
-            q.get()
+            co = self.q.get()
+            print("Set update for:", co.key)
+            self.CAN_Data[co.key] = co.getData(self.node)
+            self.q.task_done()
 
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
-        print("Set update for:", co.key)
-        self.CAN_Data[co.key] = co.getData(self.node)
+        #push co on CAN worker queue
+        self.q.put(co)
 
         # Restart SDO timer
         print("restarting timer with update rate:", float(co.updateRate))
         if co in self.CAN_Objects:
-            threading.Timer(float(co.updateRate), self.sdo_update, args=(co, )).start()
+            threading.Timer(float(co.updateRate),
+                            self.sdo_update, args=(co, )).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
