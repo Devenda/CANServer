@@ -8,13 +8,13 @@
 
 
 # pylint: disable=C0103
-import canopen
+import canopennew
 import time
 import struct
 
 # setup
 # Start with creating a network representing one CAN bus
-network = canopen.Network()
+network = canopennew.Network()
 # Add some nodes with corresponding Object Dictionaries
 # original file had a '%' should be '%%'
 node = network.add_node(38, 'os123xes.eds')
