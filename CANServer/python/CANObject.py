@@ -32,7 +32,7 @@ class CANObject(object):
     def getData(self, canNode: canopen.Node):
         print('mode', self.mode)
         if self.mode == 'SDO':
-            coDatatype = canNode.object_dictionary['Motor Speed'].data_type
+            coDatatype = canNode.object_dictionary[self.key].data_type
             types = canopen.objectdictionary.Variable.STRUCT_TYPES
 
             rawData = canNode.sdo[self.key].raw
