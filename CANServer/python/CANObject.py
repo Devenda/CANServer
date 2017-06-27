@@ -36,6 +36,8 @@ class CANObject(object):
             types = canopen.objectdictionary.Variable.STRUCT_TYPES
 
             rawData = canNode.sdo[self.key].raw
+
+            #unpack from instead of unpack, to ignore extra bytes send.
             data = types[coDatatype].unpack_from(rawData)
             scaledData = self.translate(canNode.sdo[self.key].raw)
 
