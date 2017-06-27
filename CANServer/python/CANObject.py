@@ -1,6 +1,7 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
 import random
+import canopen
 
 
 class CANObject(object):
@@ -28,12 +29,20 @@ class CANObject(object):
         # Convert the 0-1 range into a value in the right range.
         return int(round(self.toMin + (valueScaled * toSpan)))
 
-    def getData(self, canNode):
+    def getData(self, canNode: canopen.Node):
         print('mode', self.mode)
         if self.mode == 'SDO':
-            print(canNode.sdo[self.key].raw)
-            print(self.translate(canNode.sdo[self.key].raw))
-            data = str(self.translate(canNode.sdo[self.key].raw))
-            return data
+            coDatatype = canNode.object_dictionary['Motor Speed'].data_type
+            types = canopen.objectdictionary.Variable.STRUCT_TYPES
+
+            rawData = canNode.sdo[self.key].raw
+            data = types[coDatatype].unpack_from(rawData)
+            scaledData = self.translate(canNode.sdo[self.key].raw)
+
+            print("Raw data: ", rawData)
+            print("Converted data: ", data)
+            print("Scaled (translate) data: ", scaledData)
+
+            return str(scaledData)
         else:
             print("getData called on non SDO object", self.mode)

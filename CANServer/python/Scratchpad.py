@@ -8,18 +8,21 @@
 
 
 # pylint: disable=C0103
-import canopennew
+import canopen
 import time
 import struct
 
 # setup
 # Start with creating a network representing one CAN bus
-network = canopennew.Network()
+network = canopen.Network()
 # Add some nodes with corresponding Object Dictionaries
 # original file had a '%' should be '%%'
-node = network.add_node(38, 'os123xes.eds')
-#node = network.add_node(38, '/home/pi/CAN/CAN Driver/os123xes.eds')
-network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+node = network.add_node(38, 'C:\\Users\\Tinus\\Documents\\Projects\\e-Kart\\CAN bus\\CANServer\\CANServer\\python\\os123xes.eds')
+# node = network.add_node(38, '/home/pi/CAN/CAN Driver/os123xes.eds')
+# network.connect(channel='can0', bustype='socketcan', bitrate=125000)
+
+
+print((canopen.objectdictionary.Variable.STRUCT_TYPES[node.object_dictionary['Motor Speed'].data_type].unpack_from(b'\xAA\xFF\x12\x00')))
 
 
 # # scan for all nodes:
@@ -45,12 +48,12 @@ network.connect(channel='can0', bustype='socketcan', bitrate=125000)
 
 
 # # Read a variable using SDO
-while True:
-    print(str(node.sdo.upload(0x3209, 0)))
-    print(node.sdo[0x3209].raw)
-     
-    time.sleep(0.1)
-    #print(node.sdo[0x3207].desc)
+# while True:
+#     print(str(node.sdo.upload(0x3209, 0)))
+#     print(node.sdo[0x3209].raw)
+
+#     time.sleep(0.1)
+    # print(node.sdo[0x3207].desc)
 # while True:
 #     # # product id
 #     # print(node.sdo[0x3464].raw, "Bits", node.sdo[0x3464].bits)
@@ -120,7 +123,7 @@ while True:
 # node.nmt.state = 'OPERATIONAL'
 
 # # Read a value from Tx PDO 1
-#node.pdo.tx['Record Number 0x1400'].wait_for_reception()
+# node.pdo.tx['Record Number 0x1400'].wait_for_reception()
 # speed = node.pdo.tx[1]['ApplicationStatus.ActualSpeed'].phys
 
 # Disconnect from CAN bus
