@@ -37,7 +37,7 @@ class CANObject(object):
 
             rawData = canNode.sdo[self.key].raw
 
-            #unpack from instead of unpack, to ignore extra bytes send.
+            #unpack_from instead of unpack, to ignore extra bytes send.
             data = types[coDatatype].unpack_from(rawData)
             scaledData = self.translate(canNode.sdo[self.key].raw)
 

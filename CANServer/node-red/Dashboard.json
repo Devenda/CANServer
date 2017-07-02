@@ -1,13 +1,195 @@
 [
     {
+        "id": "c4bc86ae.bc827",
+        "type": "tab",
+        "label": "test_flow"
+    },
+    {
+        "id": "b6136f21.707d08",
+        "type": "tab",
+        "label": "Flow 2"
+    },
+    {
+        "id": "26596680.efe712",
+        "type": "websocket-client",
+        "z": "",
+        "path": "ws://127.0.0.1:5678/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "bef8df8.a317aa",
+        "type": "ui_group",
+        "z": "",
+        "name": "Default",
+        "tab": "",
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "ba98106b.a4c5c8",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "Helvetica Neue",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "Helvetica Neue",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "Helvetica Neue",
+                "reset": false
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#000000",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#10cfd8",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#097479",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                }
+            }
+        },
+        "site": {
+            "name": "e-Kart Dashboard",
+            "hideToolbar": "true",
+            "allowSwipe": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "3ba66566.ed74ca",
+        "type": "ui_tab",
+        "z": "",
+        "name": "e-Kart",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "b9cca87c.2d0418",
+        "type": "ui_group",
+        "z": "",
+        "name": "Power",
+        "tab": "3ba66566.ed74ca",
+        "order": 3,
+        "disp": false,
+        "width": "4"
+    },
+    {
+        "id": "c5061caf.0822e8",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "ws://127.0.0.1:5678",
+        "wholemsg": "false"
+    },
+    {
+        "id": "ab67b9a2.c3ad78",
+        "type": "websocket-client",
+        "z": "",
+        "path": "ws://192.168.1.123:5678/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "e54fb6f7.60d0e",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "ws://192.168.1.123:5678/",
+        "wholemsg": "false"
+    },
+    {
+        "id": "b3200681.22cf18",
+        "type": "ui_group",
+        "z": "",
+        "name": "Dashboard",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "ae78bcc3.5801d",
+        "type": "ui_group",
+        "z": "",
+        "name": "Speed",
+        "tab": "3ba66566.ed74ca",
+        "order": 1,
+        "disp": false,
+        "width": "4"
+    },
+    {
+        "id": "3cf76c8.2a1bb94",
+        "type": "ui_group",
+        "z": "",
+        "name": "Status",
+        "tab": "3ba66566.ed74ca",
+        "order": 4,
+        "disp": false,
+        "width": "3"
+    },
+    {
         "id": "c457c91e.98758",
         "type": "websocket in",
         "z": "c4bc86ae.bc827",
         "name": "RPi Websocket",
         "server": "",
-        "client": "ab67b9a2.c3ad78",
-        "x": 110.9000129699707,
-        "y": 55.000000953674316,
+        "client": "26596680.efe712",
+        "x": 100.90001678466797,
+        "y": 44.000000953674316,
         "wires": [
             [
                 "4bfd4d34.3080a4",
@@ -28,6 +210,49 @@
         "wires": []
     },
     {
+        "id": "1fea55b4.3bf352",
+        "type": "websocket out",
+        "z": "b6136f21.707d08",
+        "name": "RPi Websocket",
+        "server": "c5061caf.0822e8",
+        "client": "",
+        "x": 713.1000556945801,
+        "y": 95.59999084472656,
+        "wires": []
+    },
+    {
+        "id": "4bbdc31d.79b244",
+        "type": "inject",
+        "z": "b6136f21.707d08",
+        "name": "CANConfig",
+        "topic": "",
+        "payload": "[     {         \"node\": 36,         \"key\": \"Motor Speed\",         \"mode\": \"SDO\",         \"updateRate\": \"1.2\",         \"toMin\": -12000,         \"toMax\": 12000,         \"fromMin\": -32768,         \"fromMax\": 32768     },     {         \"node\": 36,         \"key\": \"Current (RMS)\",         \"mode\": \"SDO\",         \"updateRate\": \"2\",         \"toMin\": 0,         \"toMax\": 1000,         \"fromMin\": 0,         \"fromMax\": 10000     } ]",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 221.90003204345703,
+        "y": 89.00000762939453,
+        "wires": [
+            [
+                "1fea55b4.3bf352",
+                "218172be.954806"
+            ]
+        ]
+    },
+    {
+        "id": "218172be.954806",
+        "type": "debug",
+        "z": "b6136f21.707d08",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 702.9000091552734,
+        "y": 218.1999969482422,
+        "wires": []
+    },
+    {
         "id": "4bfd4d34.3080a4",
         "type": "json",
         "z": "c4bc86ae.bc827",
@@ -38,7 +263,9 @@
             [
                 "5064e98d.a955b8",
                 "87748a02.f6ea4",
-                "ee4812a4.e9643"
+                "ee4812a4.e9643",
+                "83ef6a8d.7d0278",
+                "d3972677.f42b98"
             ]
         ]
     },
@@ -47,7 +274,7 @@
         "type": "debug",
         "z": "c4bc86ae.bc827",
         "name": "JSON String",
-        "active": false,
+        "active": true,
         "console": "false",
         "complete": "payload",
         "x": 282.20001220703125,
@@ -93,7 +320,7 @@
         "type": "debug",
         "z": "c4bc86ae.bc827",
         "name": "Motor Speed",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "payload",
         "x": 802.9000244140625,
@@ -115,13 +342,13 @@
         "type": "ui_gauge",
         "z": "c4bc86ae.bc827",
         "name": "Motor Speed",
-        "group": "b9cca87c.2d0418",
-        "order": 0,
-        "width": 0,
-        "height": 0,
+        "group": "ae78bcc3.5801d",
+        "order": 1,
+        "width": "4",
+        "height": "3",
         "gtype": "gage",
-        "title": "Gauge",
-        "label": "units",
+        "title": "Motor RPM",
+        "label": "RPM",
         "format": "{{value}}",
         "min": 0,
         "max": "3500",
@@ -141,10 +368,10 @@
         "type": "ui_gauge",
         "z": "c4bc86ae.bc827",
         "name": "BDI",
-        "group": "b9cca87c.2d0418",
-        "order": 0,
-        "width": 0,
-        "height": 0,
+        "group": "3cf76c8.2a1bb94",
+        "order": 2,
+        "width": "3",
+        "height": "2",
         "gtype": "wave",
         "title": "BDI",
         "label": "units",
@@ -167,7 +394,7 @@
         "type": "debug",
         "z": "c4bc86ae.bc827",
         "name": "BDI",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "payload",
         "x": 776,
@@ -175,28 +402,103 @@
         "wires": []
     },
     {
-        "id": "ab67b9a2.c3ad78",
-        "type": "websocket-client",
-        "z": "",
-        "path": "ws://192.168.1.123:5678/",
-        "wholemsg": "false"
+        "id": "83ef6a8d.7d0278",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "Temperature",
+        "func": "if (\"Temperature\" in msg.payload){\n    msg.payload = msg.payload[\"Temperature\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 641,
+        "y": 298,
+        "wires": [
+            [
+                "8cbb7730.44c138",
+                "b9ef1d8f.1fe25"
+            ]
+        ]
     },
     {
-        "id": "b9cca87c.2d0418",
-        "type": "ui_group",
-        "z": "",
-        "name": "Dashboard",
-        "tab": "3ba66566.ed74ca",
+        "id": "8cbb7730.44c138",
+        "type": "ui_text",
+        "z": "c4bc86ae.bc827",
+        "group": "3cf76c8.2a1bb94",
         "order": 1,
-        "disp": true,
-        "width": "6"
+        "width": 0,
+        "height": 0,
+        "name": "Temperature",
+        "label": "Temp",
+        "format": "{{msg.payload}}°C",
+        "layout": "col-center",
+        "x": 813.5,
+        "y": 341.77777099609375,
+        "wires": []
     },
     {
-        "id": "3ba66566.ed74ca",
-        "type": "ui_tab",
-        "z": "",
-        "name": "Main",
-        "icon": "dashboard",
-        "order": 1
+        "id": "b9ef1d8f.1fe25",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Temperature",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 813,
+        "y": 298,
+        "wires": []
+    },
+    {
+        "id": "d3972677.f42b98",
+        "type": "function",
+        "z": "c4bc86ae.bc827",
+        "name": "Current (RMS)",
+        "func": "if (\"Current (RMS)\" in msg.payload){\n    msg.payload = msg.payload[\"Current (RMS)\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 667,
+        "y": 434,
+        "wires": [
+            [
+                "576a1324.7fcf7c",
+                "47d0fdaf.3b83b4"
+            ]
+        ]
+    },
+    {
+        "id": "576a1324.7fcf7c",
+        "type": "ui_gauge",
+        "z": "c4bc86ae.bc827",
+        "name": "Current (RMS)",
+        "group": "b9cca87c.2d0418",
+        "order": 1,
+        "width": "4",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Current (RMS)",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 880.2999801635742,
+        "y": 445.5778064727783,
+        "wires": []
+    },
+    {
+        "id": "47d0fdaf.3b83b4",
+        "type": "debug",
+        "z": "c4bc86ae.bc827",
+        "name": "Current (RMS)",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 881.7999782562256,
+        "y": 387.80000019073486,
+        "wires": []
     }
 ]
