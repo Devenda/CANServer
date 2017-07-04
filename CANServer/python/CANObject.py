@@ -2,6 +2,7 @@
 #!/usr/bin/env python3
 import random
 import canopen
+import sys
 
 
 class CANObject(object):
@@ -30,19 +31,17 @@ class CANObject(object):
         return int(round(self.toMin + (valueScaled * toSpan)))
 
     def getData(self, canNode: canopen.Node):
-        print('mode', self.mode)
+        #print('mode', self.mode)
         if self.mode == 'SDO':
             coDatatype = canNode.object_dictionary[self.key].data_type
             possibleCoDatatypes = canopen.objectdictionary.Variable.STRUCT_TYPES
-            rawData = canNode.sdo[self.key].raw
 
-            #unpack_from instead of unpack, to ignore extra bytes send.
-            data = possibleCoDatatypes[coDatatype].unpack_from(rawData)
+            rawData = canNode.sdo[self.key].data
+            # unpack_from instead of unpack, to ignore extra bytes send.
+            data = (possibleCoDatatypes[coDatatype].unpack_from(rawData))[0]
             scaledData = self.translate(data)
-
-            print("Raw databytes: ", rawData)
-            print("Converted data: ", data)
-            print("Scaled (translated) data: ", scaledData)
+            
+            print(self.key, ": Raw Data:", data, " Converted data: ", scaledData)
 
             return str(scaledData)
         else:
