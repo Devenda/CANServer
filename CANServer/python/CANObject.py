@@ -33,17 +33,16 @@ class CANObject(object):
         print('mode', self.mode)
         if self.mode == 'SDO':
             coDatatype = canNode.object_dictionary[self.key].data_type
-            types = canopen.objectdictionary.Variable.STRUCT_TYPES
-
+            possibleCoDatatypes = canopen.objectdictionary.Variable.STRUCT_TYPES
             rawData = canNode.sdo[self.key].raw
 
             #unpack_from instead of unpack, to ignore extra bytes send.
-            data = types[coDatatype].unpack_from(rawData)
-            scaledData = self.translate(canNode.sdo[self.key].raw)
+            data = possibleCoDatatypes[coDatatype].unpack_from(rawData)
+            scaledData = self.translate(data)
 
-            print("Raw data: ", rawData)
+            print("Raw databytes: ", rawData)
             print("Converted data: ", data)
-            print("Scaled (translate) data: ", scaledData)
+            print("Scaled (translated) data: ", scaledData)
 
             return str(scaledData)
         else:
