@@ -9,7 +9,7 @@ import CANServer
 def main():
     # Setup logger
     logging.basicConfig(filename='/home/pi/CAN/CANServer/CANServer/python/CANDriver.log',
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.WARNING)
     logging.info('Logger setup done, starting web server')
 
     try:
@@ -28,5 +28,5 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        self.logger.exception("Unforseen error")
+        logging.exception("Unforseen error")
         raise

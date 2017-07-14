@@ -40,7 +40,7 @@ class CANServer(object):
         cw.start()
 
         try:
-        self.network.connect(
+            self.network.connect(
             channel='can0', bustype='socketcan', bitrate=125000)
         except Exception as e:
             self.logger.exception("Could not connect to CAN network")
@@ -86,9 +86,9 @@ class CANServer(object):
 
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
-        while True:
-            self.logger.info("can worker: set update for:%s", co.key)
+        while True:            
             co = self.q.get()
+            self.logger.info("can worker: set update for:%s", co.key)
             self.CAN_Data[co.key] = co.getData(self.node)
             self.q.task_done()
 
@@ -123,8 +123,7 @@ class CANServer(object):
             if self.nodeNo != co["node"] and self.nodeNo == 0:
                 self.logger.info('Node:%s', self.nodeNo)
                 self.nodeNo = co["node"]
-            # node = None, because node not yet initialized
-
+                
             # save can objects
             self.CAN_Objects.append(CANObject.CANObject(co["node"], co["key"], co["mode"],
                                                         co["updateRate"], co["toMin"], co["toMax"],
