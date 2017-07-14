@@ -47,9 +47,6 @@ class CANServer(object):
 
         # setup CAN objects
         for co in self.CAN_Objects:
-            # Add key to data dict with initial value
-            self.CAN_Data[co.key] = 0
-
             # Setup PDO
             if co.mode == "PDO":
                 if not pdoClear:
@@ -84,14 +81,6 @@ class CANServer(object):
 
         # ToDo send data each time PDO data received
 
-    # Gets all CAN Objects from the queue and gets there actual data
-    def can_worker(self):
-        while True:            
-            co = self.q.get()
-            self.logger.info("can worker: set update for:%s", co.key)
-            self.CAN_Data[co.key] = co.getData(self.node)
-            self.q.task_done()
-
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         # push co on CAN worker queue
@@ -104,6 +93,14 @@ class CANServer(object):
             threading.Timer(float(co.updateRate),
                             self.sdo_update, args=(co, )).start()
 
+    # Gets all CAN Objects from the queue and gets there actual data
+    def can_worker(self):
+        while True:            
+            co = self.q.get()
+            self.logger.info("can worker: set update for:%s", co.key)
+            self.CAN_Data[co.key] = co.getData(self.node)
+            self.q.task_done()
+
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
         try:
@@ -112,19 +109,11 @@ class CANServer(object):
         except ValueError as e:
             self.logger.exception("The received string is not JSON!")
         
-        # Get each CANObject from webpage
-        # ToDo move to init?
-        for co in canObjectList:
-            # # Warn when multiple nodes are used
-            # if self.nodeNo != co["node"] and self.nodeNo != 0:
-            #     self.logger.warning('Warning: New node detected:%s', self.node)
-            #     self.nodeNo = co["node"]
-            # # Assign node for first config
-            # if self.nodeNo != co["node"] and self.nodeNo == 0:
-            #     self.logger.info('Node:%s', self.nodeNo)
-            #     self.nodeNo = co["node"]
+        # Empty existing list       
+        del self.CAN_Objects[:] = []
 
-            # save can objects
+        for co in canObjectList:
+            # Init CAN objects
             self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"],
                                                         co["updateRate"], co["toMin"], co["toMax"],
                                                         co["fromMin"], co["fromMax"]))
@@ -135,6 +124,7 @@ class CANServer(object):
             newRate = float(co["updateRate"])
             if newRate < self.updateRate:
                 self.updateRate = newRate
+                
         # Init network, start driver
         self.initNetwork()
 

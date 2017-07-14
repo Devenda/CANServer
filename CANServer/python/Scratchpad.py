@@ -6,6 +6,10 @@
 # print(node.pdo.tx[1].clear())
 # print(node.pdo.tx[1].add_variable('Motor Speed'))
 
+lst1 = [1, 2, 3]
+lst2 = lst1
+del lst1[:]
+print(lst2)
 
 # pylint: disable=C0103
 import canopen
