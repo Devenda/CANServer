@@ -1,6 +1,5 @@
 [
     {
-        "node": 36,
         "key": "Vehicle Speed",
         "mode": "SDO",
         "updateRate": "0.1",
@@ -10,7 +9,6 @@
         "fromMax": 32767
     },
     {
-        "node": 36,
         "key": "Motor Speed",
         "mode": "SDO",
         "updateRate": "0.5",
@@ -20,7 +18,6 @@
         "fromMax": 32767
     },
     {
-        "node": 36,
         "key": "Current (RMS)",
         "mode": "SDO",
         "updateRate": "0.1",
@@ -30,7 +27,6 @@
         "fromMax": 10000
     },
      {
-        "node": 36,
         "key": "BDI",
         "mode": "SDO",
         "updateRate": "5",
@@ -40,7 +36,6 @@
         "fromMax": 100
     },
      {
-        "node": 36,
         "key": "Temperature",
         "mode": "SDO",
         "updateRate": "5",

@@ -115,17 +115,17 @@ class CANServer(object):
         # Get each CANObject from webpage
         # ToDo move to init?
         for co in canObjectList:
-            # Warn when multiple nodes are used
-            if self.nodeNo != co["node"] and self.nodeNo != 0:
-                self.logger.warning('Warning: New node detected:%s', self.node)
-                self.nodeNo = co["node"]
-            # Assign node for first config
-            if self.nodeNo != co["node"] and self.nodeNo == 0:
-                self.logger.info('Node:%s', self.nodeNo)
-                self.nodeNo = co["node"]
-                
+            # # Warn when multiple nodes are used
+            # if self.nodeNo != co["node"] and self.nodeNo != 0:
+            #     self.logger.warning('Warning: New node detected:%s', self.node)
+            #     self.nodeNo = co["node"]
+            # # Assign node for first config
+            # if self.nodeNo != co["node"] and self.nodeNo == 0:
+            #     self.logger.info('Node:%s', self.nodeNo)
+            #     self.nodeNo = co["node"]
+
             # save can objects
-            self.CAN_Objects.append(CANObject.CANObject(co["node"], co["key"], co["mode"],
+            self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"],
                                                         co["updateRate"], co["toMin"], co["toMax"],
                                                         co["fromMin"], co["fromMax"]))
             # Init CAN Data dict with all keys and data = 0

@@ -6,11 +6,10 @@ import logging
 
 class CANObject(object):
     # todo default bij None?
-    def __init__(self, node, key, mode=None, updateRate=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
+    def __init__(self, key, mode=None, updateRate=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
         self.logger = logging.getLogger(__name__)
         self.logger.info('CANObject Logger Added')
 
-        self.node = node
         self.key = key
         self.mode = mode
         self.updateRate = updateRate
