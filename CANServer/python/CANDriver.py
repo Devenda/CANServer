@@ -8,13 +8,13 @@ import CANServer
 
 def main():
     # Setup logger
-    logging.basicConfig(filename='CANDriver.log',
+    logging.basicConfig(filename='/home/pi/CAN/CANServer/CANServer/python/CANDriver.log',
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
     logging.info('Logger setup done, starting web server')
 
     cs = CANServer.CANServer()
     # start_server = websockets.serve(cs.handler, '127.0.0.1', 5678)  # For windows PC
-    start_server = websockets.serve(cs.handler, '192.168.1.123', 5678)  # For PI
+    start_server = websockets.serve(cs.handler, '172.24.1.1', 5678)  # For PI
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_server)

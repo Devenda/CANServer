@@ -6,7 +6,6 @@ import asyncio
 import logging
 import threading
 import queue
-import random
 import canopen
 import CANObject
 
@@ -14,7 +13,7 @@ import CANObject
 class CANServer(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.info('Logger Added')
+        self.logger.info('CAN Server Logger Added')
 
         self.CAN_Objects = []
         self.CAN_Data = {}
@@ -23,30 +22,20 @@ class CANServer(object):
 
         self.network = canopen.Network()
         self.nodeNo = 0
-        self.node =  self.network.add_node(38, 'os123xes.eds')
-
-        self.networkStarted = False
+        self.node = self.network.add_node(38, 'os123xes.eds')
 
         self.q = queue.Queue(maxsize=0)
-        
+
+    def initNetwork(self):
+        pdoClear = False
+
         # Starting CAN worker thread
         cw = threading.Thread(target=self.can_worker)
         cw.daemon = True
         cw.start()
 
-    def initNetwork(self):
-        pdoClear = False
-        # Disconnect from network when new init is done.
-        if self.networkStarted:
-            # Empty queue
-            self.q.queue.clear()
-
-            #Disconnect from network last to make sure queue is empty
-            self.network.disconnect()
-            self.networkStarted = False
-        
-        self.network.connect(channel='can0', bustype='socketcan', bitrate=125000)
-        self.networkStarted = True
+        self.network.connect(
+            channel='can0', bustype='socketcan', bitrate=125000)
 
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -91,6 +80,7 @@ class CANServer(object):
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
         while True:
+            self.logger.info("can worker")
             co = self.q.get()
             #print("Set update for:", co.key)
             self.CAN_Data[co.key] = co.getData(self.node)
@@ -99,6 +89,7 @@ class CANServer(object):
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         # push co on CAN worker queue
+        #self.logger.info("Added co to SDO watch %s", co)
         self.q.put(co)
 
         # Restart SDO timer
@@ -110,7 +101,7 @@ class CANServer(object):
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
         canObjectList = json.loads(message)
-        print('Config received:', canObjectList)
+        self.logger.info('Config received: %s', canObjectList)
         # Get each CANObject from webpage
         # ToDo move to init?
         for co in canObjectList:
