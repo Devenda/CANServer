@@ -13,7 +13,7 @@ import CANObject
 class CANServer(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.info('CAN Server Logger Added')
+        self.logger.info('CANServer Logger Added')
 
         self.CAN_Objects = []
         self.CAN_Data = {}
@@ -22,7 +22,12 @@ class CANServer(object):
 
         self.network = canopen.Network()
         self.nodeNo = 0
-        self.node = self.network.add_node(38, 'os123xes.eds')
+
+        try:
+            edsfile = "os123xes.eds"
+            self.node = self.network.add_node(38, edsfile)
+        except Exception as e:
+            self.logger.exception("could not find eds file:%s", edsfile)
 
         self.q = queue.Queue(maxsize=0)
 
@@ -34,8 +39,11 @@ class CANServer(object):
         cw.daemon = True
         cw.start()
 
+        try:
         self.network.connect(
             channel='can0', bustype='socketcan', bitrate=125000)
+        except Exception as e:
+            self.logger.exception("Could not connect to CAN network")
 
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -65,11 +73,10 @@ class CANServer(object):
             elif co.mode == "SDO":
                 self.sdo_update(co)
             else:
-                print("Error, mode", co.mode, "not known")
+                self.logger.error("Mode:%s not known!", co.mode)
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
-        print("PDO callback called")
         # Add data to Data dict
         for co in self.CAN_Objects:
             if co.mode == "pdo":
@@ -80,9 +87,8 @@ class CANServer(object):
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
         while True:
-            self.logger.info("can worker")
+            self.logger.info("can worker: set update for:%s", co.key)
             co = self.q.get()
-            #print("Set update for:", co.key)
             self.CAN_Data[co.key] = co.getData(self.node)
             self.q.task_done()
 
@@ -93,25 +99,29 @@ class CANServer(object):
         self.q.put(co)
 
         # Restart SDO timer
-        #print("restarting timer with update rate:", float(co.updateRate))
+        self.logger.info("restarting timer with update rate:%s", float(co.updateRate))
         if co in self.CAN_Objects:
             threading.Timer(float(co.updateRate),
                             self.sdo_update, args=(co, )).start()
 
     # Decode JSON config file and make CAN objects
     async def consumer(self, message):
-        canObjectList = json.loads(message)
-        self.logger.info('Config received: %s', canObjectList)
+        try:
+            canObjectList = json.loads(message)
+            self.logger.info('Config received: %s', canObjectList)
+        except ValueError as e:
+            self.logger.exception("The received string is not JSON!")
+        
         # Get each CANObject from webpage
         # ToDo move to init?
         for co in canObjectList:
             # Warn when multiple nodes are used
             if self.nodeNo != co["node"] and self.nodeNo != 0:
-                print('Warning: New node detected:', self.node)
+                self.logger.warning('Warning: New node detected:%s', self.node)
                 self.nodeNo = co["node"]
             # Assign node for first config
             if self.nodeNo != co["node"] and self.nodeNo == 0:
-                print('Node:', self.nodeNo)
+                self.logger.info('Node:%s', self.nodeNo)
                 self.nodeNo = co["node"]
             # node = None, because node not yet initialized
 

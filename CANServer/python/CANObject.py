@@ -1,13 +1,15 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
-import random
 import canopen
-import sys
+import logging
 
 
 class CANObject(object):
     # todo default bij None?
     def __init__(self, node, key, mode=None, updateRate=None, toMin=None, toMax=None, fromMin=None, fromMax=None):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info('CANObject Logger Added')
+
         self.node = node
         self.key = key
         self.mode = mode
@@ -31,18 +33,26 @@ class CANObject(object):
         return int(round(self.toMin + (valueScaled * toSpan)))
 
     def getData(self, canNode: canopen.Node):
-        #print('mode', self.mode)
         if self.mode == 'SDO':
-            coDatatype = canNode.object_dictionary[self.key].data_type
-            possibleCoDatatypes = canopen.objectdictionary.Variable.STRUCT_TYPES
+            try:
+                #use lib to get data
+                coDatatype = canNode.object_dictionary[self.key].data_type
+                possibleCoDatatypes = canopen.objectdictionary.Variable.STRUCT_TYPES
 
-            rawData = canNode.sdo[self.key].data
-            # unpack_from instead of unpack, to ignore extra bytes send.
-            data = (possibleCoDatatypes[coDatatype].unpack_from(rawData))[0]
-            scaledData = self.translate(data)
+                rawData = canNode.sdo[self.key].data
+                # unpack_from instead of unpack, to ignore extra bytes send.
+                data = (possibleCoDatatypes[coDatatype].unpack_from(rawData))[0]
+                scaledData = self.translate(data)
+
+                self.logger.info("%s: Raw Data:%s Converted data: %s",
+                             self.key, data, scaledData)
+
+                return str(scaledData)
+            except Exception as e:
+                self.logger.exception("An error occured while requesting data from the CAN slave")
             
-            print(self.key, ": Raw Data:", data, " Converted data: ", scaledData)
-
-            return str(scaledData)
+                return str(0)
+            
         else:
-            print("getData called on non SDO object", self.mode)
+            self.logger.error(
+                "getData called on non SDO object, mode:%s", self.mode)
