@@ -16,7 +16,7 @@ def main():
         cs = CANServer.CANServer()
         # start_server = websockets.serve(cs.handler, '127.0.0.1', 5678)  # For windows PC
         start_server = websockets.serve(cs.handler, '172.24.1.1', 5678)  # For PI
-    except Exception as e:
+    except Exception:
         logging.exception("Error starting websocket")
 
     loop = asyncio.get_event_loop()
@@ -27,6 +27,6 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except Exception as e:
+    except Exception:
         logging.exception("Unforseen error")
         raise

@@ -47,7 +47,7 @@ class CANObject(object):
                              self.key, data, scaledData)
 
                 return str(scaledData)
-            except Exception as e:
+            except Exception:
                 self.logger.exception("An error occured while requesting data from the CAN slave")
             
                 return str(0)

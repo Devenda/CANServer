@@ -23,16 +23,15 @@ class CANServer(object):
         self.network = canopen.Network()
         self.nodeNo = 0
 
+        self.firstStart = True
+
         try:
-            edsfile = "os123xes.eds"
+            edsfile = "/home/pi/CAN/CANServer/CANServer/python/os123xes.eds"
             self.node = self.network.add_node(38, edsfile)
-        except Exception as e:
+        except Exception:
             self.logger.exception("could not find eds file:%s", edsfile)
 
         self.q = queue.Queue(maxsize=0)
-
-    def initNetwork(self):
-        pdoClear = False
 
         # Starting CAN worker thread
         cw = threading.Thread(target=self.can_worker)
@@ -41,17 +40,16 @@ class CANServer(object):
 
         try:
             self.network.connect(
-            channel='can0', bustype='socketcan', bitrate=125000)
-        except Exception as e:
+                channel='can0', bustype='socketcan', bitrate=125000)
+        except Exception:
             self.logger.exception("Could not connect to CAN network")
 
+    def initNetwork(self):
         # setup CAN objects
         for co in self.CAN_Objects:
             # Setup PDO
             if co.mode == "PDO":
-                if not pdoClear:
-                    self.node.pdo.tx[1].clear()
-                    pdoClear = True
+                self.node.pdo.tx[1].clear()
                 self.node.pdo.tx[1].add_variable(co.key)
                 self.node.pdo.tx[1].add_callback(self.pdo_Callback)
                 self.node.pdo.tx[1].trans_type = 1
@@ -72,7 +70,9 @@ class CANServer(object):
             else:
                 self.logger.error("Mode:%s not known!", co.mode)
 
+        self.firstStart = False
     # Callback for when PDO data is available
+
     def pdo_Callback(self, message):
         # Add data to Data dict
         for co in self.CAN_Objects:
@@ -88,17 +88,21 @@ class CANServer(object):
         self.q.put(co)
 
         # Restart SDO timer
-        self.logger.info("restarting timer with update rate:%s", float(co.updateRate))
+        self.logger.info("restarting timer with update rate:%s",
+                         float(co.updateRate))
         if co in self.CAN_Objects:
             threading.Timer(float(co.updateRate),
                             self.sdo_update, args=(co, )).start()
 
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
-        while True:            
+        while True:
             co = self.q.get()
             self.logger.info("can worker: set update for:%s", co.key)
-            self.CAN_Data[co.key] = co.getData(self.node)
+            # Only add value if key is present, otherwise do nothing (assigning
+            # to nonexisting key ads key)
+            if co.key in self.CAN_Data:
+                self.CAN_Data[co.key] = co.getData(self.node)
             self.q.task_done()
 
     # Decode JSON config file and make CAN objects
@@ -106,11 +110,12 @@ class CANServer(object):
         try:
             canObjectList = json.loads(message)
             self.logger.info('Config received: %s', canObjectList)
-        except ValueError as e:
+        except ValueError:
             self.logger.exception("The received string is not JSON!")
-        
-        # Empty existing list       
-        del self.CAN_Objects[:] = []
+
+        # Empty existing list
+        self.CAN_Objects[:] = []
+        self.CAN_Data.clear()
 
         for co in canObjectList:
             # Init CAN objects
@@ -124,9 +129,10 @@ class CANServer(object):
             newRate = float(co["updateRate"])
             if newRate < self.updateRate:
                 self.updateRate = newRate
-                
-        # Init network, start driver
-        self.initNetwork()
+
+        # Init network, start driver but onlu on first start
+        if self.firstStart:
+            self.initNetwork()
 
     # Sends data on the fastest rate of all CAN Objects
     async def producer(self):
