@@ -96,10 +96,12 @@ class CANServer(object):
                 # Init CAN Data dict with all keys and data = 0
                 self.CAN_Data[co["key"]] = "0"
 
-                # set update rate to fastest rate of all co
+                # set update rate to fastest rate of all co with a minimum of 0.5
                 newRate = float(co["updateRate"])
-                if newRate < self.updateRate:
+                if newRate < self.updateRate and newRate >= 0.5:
                     self.updateRate = newRate
+                else:
+                    self.updateRate = 0.5
 
             # Init objects
             self.initCanObjects()
