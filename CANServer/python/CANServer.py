@@ -6,6 +6,8 @@ import asyncio
 import websockets
 import canopen
 import CANObject
+import random
+import datetime
 
 
 class CANServer(object):
@@ -44,19 +46,18 @@ class CANServer(object):
         self.initNetwork()
 
     async def producer(self):
-        await asyncio.sleep(0.5)
-        values = [1, 10, 100, 1000, 10000, 100000, 1000000]
+        await asyncio.sleep(0.4)
+        values = [1000000, 1]
 
-        if self.index <= 6:
-            out = values[self.index]
-            self.index += 1
-            print(out)
-            return str(out)
-        else:
+        
+        if self.index == 1:
+            out = values[1]
             self.index = 0
-            out = 0
-            print(out)
-            return str(out)
+        else:
+            out = values[0]
+            self.index = 1
+
+        return str(datetime.datetime.utcnow().strftime('%f %H:%M:%S.%f')[:-3])
 
     async def consumer_handler(self, websocket):
         while True:
@@ -66,6 +67,7 @@ class CANServer(object):
     async def producer_handler(self, websocket):
         while True:
             message = await self.producer()
+            print("Mess:", message)
             await websocket.send(message)
 
     async def handler(self, websocket, path):
