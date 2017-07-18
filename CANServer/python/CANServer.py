@@ -43,36 +43,9 @@ class CANServer(object):
                 channel='can0', bustype='socketcan', bitrate=125000)
         except Exception:
             self.logger.exception("Could not connect to CAN network")
+    
 
-    def initNetwork(self):
-        # setup CAN objects
-        for co in self.CAN_Objects:
-            # Setup PDO
-            if co.mode == "PDO":
-                self.node.pdo.tx[1].clear()
-                self.node.pdo.tx[1].add_variable(co.key)
-                self.node.pdo.tx[1].add_callback(self.pdo_Callback)
-                self.node.pdo.tx[1].trans_type = 1
-                self.node.pdo.tx[1].enabled = True
-
-                # Save config
-                self.node.nmt.state = 'PRE-OPERATIONAL'
-                self.node.pdo.save()
-
-                # Set sync
-                self.network.sync.start(0.01)
-
-                # Run
-                self.node.nmt.state = 'OPERATIONAL'
-            # Setup SDO
-            elif co.mode == "SDO":
-                self.sdo_update(co)
-            else:
-                self.logger.error("Mode:%s not known!", co.mode)
-
-        self.firstStart = False
     # Callback for when PDO data is available
-
     def pdo_Callback(self, message):
         # Add data to Data dict
         for co in self.CAN_Objects:
@@ -110,29 +83,55 @@ class CANServer(object):
         try:
             canObjectList = json.loads(message)
             self.logger.info('Config received: %s', canObjectList)
+
+            # Empty existing list
+            self.CAN_Objects[:] = []
+            self.CAN_Data.clear()
+
+            for co in canObjectList:
+                # Init CAN objects
+                self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"],
+                                                            co["updateRate"], co["toMin"], co["toMax"],
+                                                            co["fromMin"], co["fromMax"]))
+                # Init CAN Data dict with all keys and data = 0
+                self.CAN_Data[co["key"]] = "0"
+
+                # set update rate to fastest rate of all co
+                newRate = float(co["updateRate"])
+                if newRate < self.updateRate:
+                    self.updateRate = newRate
+
+            # Init objects
+            self.initCanObjects()
+
         except ValueError:
             self.logger.exception("The received string is not JSON!")
+            
+    def initCanObjects(self):
+        # setup CAN objects
+        for co in self.CAN_Objects:
+            # Setup PDO
+            if co.mode == "PDO":
+                self.node.pdo.tx[1].clear()
+                self.node.pdo.tx[1].add_variable(co.key)
+                self.node.pdo.tx[1].add_callback(self.pdo_Callback)
+                self.node.pdo.tx[1].trans_type = 1
+                self.node.pdo.tx[1].enabled = True
 
-        # Empty existing list
-        self.CAN_Objects[:] = []
-        self.CAN_Data.clear()
+                # Save config
+                self.node.nmt.state = 'PRE-OPERATIONAL'
+                self.node.pdo.save()
 
-        for co in canObjectList:
-            # Init CAN objects
-            self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"],
-                                                        co["updateRate"], co["toMin"], co["toMax"],
-                                                        co["fromMin"], co["fromMax"]))
-            # Init CAN Data dict with all keys and data = 0
-            self.CAN_Data[co["key"]] = "0"
+                # Set sync
+                self.network.sync.start(0.01)
 
-            # set update rate to fastest rate of all co
-            newRate = float(co["updateRate"])
-            if newRate < self.updateRate:
-                self.updateRate = newRate
-
-        # Init network, start driver but onlu on first start
-        if self.firstStart:
-            self.initNetwork()
+                # Run
+                self.node.nmt.state = 'OPERATIONAL'
+            # Setup SDO
+            elif co.mode == "SDO":
+                self.sdo_update(co)
+            else:
+                self.logger.error("Mode:%s not known!", co.mode)
 
     # Sends data on the fastest rate of all CAN Objects
     async def producer(self):
