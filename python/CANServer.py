@@ -1,6 +1,6 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
-
+import configparser
 import json
 import asyncio
 import logging
@@ -9,9 +9,12 @@ import queue
 import canopen
 import CANObject
 
-
 class CANServer(object):
     def __init__(self):
+          # Get config
+        self.config = configparser.ConfigParser()
+        self.config.read('CANSERVER.INI')
+
         self.logger = logging.getLogger(__name__)
         self.logger.info('CANServer Logger Added')
 
@@ -26,8 +29,8 @@ class CANServer(object):
         self.firstStart = True
 
         try:
-            edsfile = "/home/pi/CAN/CANServer/CANServer/python/os123xes.eds"
-            self.node = self.network.add_node(38, edsfile)
+            edsfile = self.config['CANSERVER']['edsFilePath']
+            self.node = self.network.add_node(self.config['CANSERVER']['canNode'], edsfile)
         except Exception:
             self.logger.exception("could not find eds file:%s", edsfile)
 
@@ -40,7 +43,7 @@ class CANServer(object):
 
         try:
             self.network.connect(
-                channel='can0', bustype='socketcan', bitrate=125000)
+                channel=self.config['CANSERVER']['canChannel'], bustype='socketcan', bitrate=125000)
         except Exception:
             self.logger.exception("Could not connect to CAN network")
     
@@ -98,10 +101,10 @@ class CANServer(object):
 
                 # set update rate to fastest rate of all co with a minimum of 0.5
                 newRate = float(co["updateRate"])
-                if newRate < self.updateRate and newRate >= 0.5:
+                if newRate < self.updateRate and newRate >= self.config['CANSERVER']['minUpdateRate']:
                     self.updateRate = newRate
                 else:
-                    self.updateRate = 0.5
+                    self.updateRate = self.config['CANSERVER']['minUpdateRate']
 
             # Init objects
             self.initCanObjects()

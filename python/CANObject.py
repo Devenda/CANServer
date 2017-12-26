@@ -1,8 +1,8 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
-import canopen
+import configparser
 import logging
-
+import canopen
 
 class CANObject(object):
     # todo default bij None?
