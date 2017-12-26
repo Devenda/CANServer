@@ -13,7 +13,7 @@ class CANServer(object):
     def __init__(self):
           # Get config
         self.config = configparser.ConfigParser()
-        self.config.read('CANSERVER.INI')
+        self.config.read('/home/pi/CAN/CANServer/python/CANSERVER.INI')
 
         self.logger = logging.getLogger(__name__)
         self.logger.info('CANServer Logger Added')
@@ -30,7 +30,7 @@ class CANServer(object):
 
         try:
             edsfile = self.config['CANSERVER']['edsFilePath']
-            self.node = self.network.add_node(self.config['CANSERVER']['canNode'], edsfile)
+            self.node = self.network.add_node(int(self.config['CANSERVER']['canNode']), edsfile)
         except Exception:
             self.logger.exception("could not find eds file:%s", edsfile)
 
@@ -101,10 +101,10 @@ class CANServer(object):
 
                 # set update rate to fastest rate of all co with a minimum of 0.5
                 newRate = float(co["updateRate"])
-                if newRate < self.updateRate and newRate >= self.config['CANSERVER']['minUpdateRate']:
+                if newRate < self.updateRate and newRate >= float(self.config['CANSERVER']['minUpdateRate']):
                     self.updateRate = newRate
                 else:
-                    self.updateRate = self.config['CANSERVER']['minUpdateRate']
+                    self.updateRate = float(self.config['CANSERVER']['minUpdateRate'])
 
             # Init objects
             self.initCanObjects()
