@@ -11,7 +11,7 @@
     {
         "key": "Motor Speed",
         "mode": "SDO",
-        "updateRate": "0.5",
+        "updateRate": "0.4",
         "toMin": -32768,
         "toMax": 32767,
         "fromMin": -32768,

@@ -1,11 +1,14 @@
 # pylint: disable=C0103,C0111
 #!/usr/bin/env python3
 import configparser
+import csv
 import json
 import asyncio
 import logging
 import threading
 import queue
+import datetime
+from collections import OrderedDict
 import canopen
 import CANObject
 
@@ -19,7 +22,7 @@ class CANServer(object):
         self.logger.info('CANServer Logger Added')
 
         self.CAN_Objects = []
-        self.CAN_Data = {}
+        self.CAN_Data = OrderedDict()
 
         self.updateRate = 1.0  # float()
 
@@ -27,6 +30,10 @@ class CANServer(object):
         self.nodeNo = 0
 
         self.firstStart = True
+
+        self.logData = bool(self.config['CANSERVER']['logData'])
+        self.csvfile = None
+        self.csvwriter = None
 
         try:
             edsfile = self.config['CANSERVER']['edsFilePath']
@@ -46,7 +53,6 @@ class CANServer(object):
                 channel=self.config['CANSERVER']['canChannel'], bustype='socketcan', bitrate=125000)
         except Exception:
             self.logger.exception("Could not connect to CAN network")
-    
 
     # Callback for when PDO data is available
     def pdo_Callback(self, message):
@@ -93,8 +99,8 @@ class CANServer(object):
 
             for co in canObjectList:
                 # Init CAN objects
-                self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"],
-                                                            co["updateRate"], co["toMin"], co["toMax"],
+                self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"], co["updateRate"],
+                                                            co["toMin"], co["toMax"],
                                                             co["fromMin"], co["fromMax"]))
                 # Init CAN Data dict with all keys and data = 0
                 self.CAN_Data[co["key"]] = "0"
@@ -103,15 +109,22 @@ class CANServer(object):
                 newRate = float(co["updateRate"])
                 if newRate < self.updateRate and newRate >= float(self.config['CANSERVER']['minUpdateRate']):
                     self.updateRate = newRate
+                elif self.logData:
+                    self.updateRate = 0.1
                 else:
                     self.updateRate = float(self.config['CANSERVER']['minUpdateRate'])
 
+            if self.logData:
+                filename = 'eKartlog_' + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.csv'
+                self.csvfile = open(filename, "wb")
+                with self.csvfile:
+                    csvwriter = csv.writer(self.csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                    csvwriter.writerow(self.CAN_Data.keys())
             # Init objects
             self.initCanObjects()
 
         except ValueError:
             self.logger.exception("The received string is not JSON!")
-            
     def initCanObjects(self):
         # setup CAN objects
         for co in self.CAN_Objects:
@@ -141,6 +154,9 @@ class CANServer(object):
     # Sends data on the fastest rate of all CAN Objects
     async def producer(self):
         await asyncio.sleep(self.updateRate)
+
+        if self.logData:
+            self.csvwriter.writerow(self.CAN_Data.values())
         return json.dumps(self.CAN_Data)
 
     async def consumer_handler(self, websocket):
