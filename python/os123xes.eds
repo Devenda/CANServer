@@ -4565,9 +4565,9 @@ HighLimit=32767
 ObjFlags=0x0
 
 [320B]
-ParameterName=Temperature
+ParameterName=Motor_Temperature
 ObjectType=0x7
-DataType=0x0010
+DataType=0x0003
 AccessType=ro
 PDOMapping=0
 LowLimit=-1000
@@ -4851,7 +4851,7 @@ HighLimit=800
 ObjFlags=0x0
 
 [322A]
-ParameterName=Temperature
+ParameterName=Controller_Temperature
 ObjectType=0x7
 DataType=0x0003
 AccessType=ro

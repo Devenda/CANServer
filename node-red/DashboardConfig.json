@@ -1,5 +1,4 @@
-[
-    {
+[{
         "key": "Vehicle Speed",
         "mode": "SDO",
         "updateRate": "0.1",
@@ -26,7 +25,7 @@
         "fromMin": 0,
         "fromMax": 10000
     },
-     {
+    {
         "key": "BDI",
         "mode": "SDO",
         "updateRate": "5",
@@ -35,13 +34,22 @@
         "fromMin": 0,
         "fromMax": 100
     },
-     {
-        "key": "Temperature",
+    {
+        "key": "Motor_Temperature",
         "mode": "SDO",
         "updateRate": "5",
         "toMin": -100,
         "toMax": 300,
         "fromMin": -1000,
         "fromMax": 3000
+    },
+    {
+        "key": "Keyswitch Voltage",
+        "mode": "SDO",
+        "updateRate": "5",
+        "toMin": 0,
+        "toMax": 105,
+        "fromMin": 0,
+        "fromMax": 10500
     }
 ]
