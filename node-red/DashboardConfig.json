@@ -1,0 +1,47 @@
+[
+    {
+        "key": "Vehicle Speed",
+        "mode": "SDO",
+        "updateRate": "0.1",
+        "toMin": -3276.8,
+        "toMax": 3276.7,
+        "fromMin": -32768,
+        "fromMax": 32767
+    },
+    {
+        "key": "Motor Speed",
+        "mode": "SDO",
+        "updateRate": "0.4",
+        "toMin": -32768,
+        "toMax": 32767,
+        "fromMin": -32768,
+        "fromMax": 32767
+    },
+    {
+        "key": "Current (RMS)",
+        "mode": "SDO",
+        "updateRate": "0.1",
+        "toMin": 0,
+        "toMax": 1000,
+        "fromMin": 0,
+        "fromMax": 10000
+    },
+     {
+        "key": "BDI",
+        "mode": "SDO",
+        "updateRate": "5",
+        "toMin": 0,
+        "toMax": 100,
+        "fromMin": 0,
+        "fromMax": 100
+    },
+     {
+        "key": "Temperature",
+        "mode": "SDO",
+        "updateRate": "5",
+        "toMin": -100,
+        "toMax": 300,
+        "fromMin": -1000,
+        "fromMax": 3000
+    }
+]
