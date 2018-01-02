@@ -119,7 +119,7 @@ class CANServer(object):
                 self.filename = '/home/pi/CAN/CANServer/python/eKartlog_' + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.csv'
                 with open(self.filename, "w") as logfile: #  = write (new?)
                     self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                    self.logger.warn(list(self.CAN_Data.keys()))
+                    #self.logger.warn(list(self.CAN_Data.keys()))
                     self.csvwriter.writerow(list(self.CAN_Data.keys()))
                     self.initialized = True
             # Init objects
