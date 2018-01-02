@@ -1,6 +1,6 @@
 [{
     "id": "b55b9711.f3096",
-    "type": "websocket in", 
+    "type": "websocket in",
     "z": "db6acd24.f27e58",
     "name": "RPi Websocket",
     "server": "",
