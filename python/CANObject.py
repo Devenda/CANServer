@@ -37,6 +37,7 @@ class CANObject(object):
             possibleCoDatatypes = canopen.objectdictionary.Variable.STRUCT_TYPES
 
             rawData = canNode.sdo[self.key].data
+
             # unpack_from instead of unpack, to ignore extra bytes send.
             data = (possibleCoDatatypes[coDatatype].unpack_from(rawData))[0]
             scaledData = self.translate(data)
@@ -45,8 +46,8 @@ class CANObject(object):
                              self.key, data, scaledData)
 
             return str(scaledData)
-        except Exception:
-            self.logger.exception(
-                "An error occured while requesting data from the CAN slave")
-
+        except canopen.SdoCommunicationError:
+            self.logger.warning("received no data from the CAN slave, is the slave connected?")
+        except:
+            self.logger.exception("Something went wrong during fetching of CAN data")
             return str(0)

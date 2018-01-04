@@ -20,7 +20,6 @@ def main():
     logging.info(os.path.exists('/home/pi/CAN/CANServer/python/CANSERVER.INI'))
     try:
         cs = CANServer.CANServer()
-        # start_server = websockets.serve(cs.handler, '127.0.0.1', 5678)  # For windows PC
         start_server = websockets.serve(cs.handler,
                                         config['CANDRIVER']['WebSocketIp'],
                                         config['CANDRIVER']['WebSocketPort'])  # For PI
