@@ -9,9 +9,10 @@ import threading
 import queue
 import datetime
 from collections import OrderedDict
+import time
+import can
 import canopen
 import CANObject
-
 
 class CANServer(object):
     def __init__(self):
@@ -36,11 +37,8 @@ class CANServer(object):
         self.csvwriter = None
         self.initialized = False
 
-        try:
-            edsfile = self.config['CANSERVER']['edsFilePath']
-            self.node = self.network.add_node(int(self.config['CANSERVER']['canNode']), edsfile)
-        except Exception:
-            self.logger.exception("could not find eds file:%s", edsfile)
+        edsfile = self.config['CANSERVER']['edsFilePath']
+        self.node = self.network.add_node(int(self.config['CANSERVER']['canNode']), edsfile)
 
         self.q = queue.Queue(maxsize=0)
 
@@ -50,8 +48,26 @@ class CANServer(object):
         cw.start()
 
         try:
-            self.network.connect(
-                channel=self.config['CANSERVER']['canChannel'], bustype='socketcan', bitrate=125000)
+            # try:
+            #     bus = can.bus.BusABC(channel=self.config['CANSERVER']['canChannel'], bustype='socketcan', bitrate=125000)
+            #     bus.send(can.Message())
+            # except Exception:
+            #     self.logger.exception("unable to send msg")
+
+            self.network.connect(channel=self.config['CANSERVER']['canChannel'], bustype='socketcan', bitrate=125000)        
+
+            # while True:
+            #     time.sleep(1)
+            #     try:
+            #         self.network.scanner.search()
+            #     except can.CanError:
+            #         self.logger.exception("Could not send can message")
+            #     # We may need to wait a short while here to allow all nodes to respond
+            #     time.sleep(0.1)
+            #     if self.node in self.network.scanner.nodes:
+            #         break
+            #     else:
+            #         self.logger.warning("configured node not found, retrying in 1sec")
         except Exception:
             self.logger.exception("Could not connect to CAN network")
 
@@ -105,7 +121,7 @@ class CANServer(object):
                 self.filename = '/home/pi/CAN/CANServer/python/eKartlog_' + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.csv'
                 with open(self.filename, "w") as logfile:  # = write (new?)
                     self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                    # self.logger.warn(list(self.CAN_Data.keys()))
+                    self.logger.info(list(self.CAN_Data.keys()))
 
                     header = ['Time'] + list(self.CAN_DataToLog.keys())
 
@@ -122,7 +138,7 @@ class CANServer(object):
         for co in self.CAN_Objects:
             self.sdo_update(co)
 
-    # Sends data on the sendRate                                       
+    # Sends data on the sendRate
     async def producer(self):
         await asyncio.sleep(float(self.config['CANSERVER']['sendRate']))
 

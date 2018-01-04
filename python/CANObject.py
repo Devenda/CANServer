@@ -48,6 +48,7 @@ class CANObject(object):
             return str(scaledData)
         except canopen.SdoCommunicationError:
             self.logger.warning("received no data from the CAN slave, is the slave connected?")
+            return str(0)
         except:
             self.logger.exception("Something went wrong during fetching of CAN data")
             return str(0)
