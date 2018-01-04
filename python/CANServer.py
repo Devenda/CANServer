@@ -12,6 +12,7 @@ from collections import OrderedDict
 import canopen
 import CANObject
 
+
 class CANServer(object):
     def __init__(self):
           # Get config
@@ -23,8 +24,7 @@ class CANServer(object):
 
         self.CAN_Objects = []
         self.CAN_Data = OrderedDict()
-
-        self.updateRate = 1.0  # float()
+        self.CAN_DataToLog = OrderedDict()
 
         self.network = canopen.Network()
         self.nodeNo = 0
@@ -55,15 +55,6 @@ class CANServer(object):
         except Exception:
             self.logger.exception("Could not connect to CAN network")
 
-    # Callback for when PDO data is available
-    def pdo_Callback(self, message):
-        # Add data to Data dict
-        for co in self.CAN_Objects:
-            if co.mode == "pdo":
-                self.CAN_Data[co.key] = message[co.key].raw
-
-        # ToDo send data each time PDO data received
-
     # Gets called after a time defined by the update rate of the SDO object
     def sdo_update(self, co: CANObject.CANObject):
         # push co on CAN worker queue
@@ -71,21 +62,21 @@ class CANServer(object):
         self.q.put(co)
 
         # Restart SDO timer
-        self.logger.info("restarting timer with update rate:%s",
-                         float(co.updateRate))
+        self.logger.info("restarting timer with update rate:%s", float(co.updateRate))
         if co in self.CAN_Objects:
-            threading.Timer(float(co.updateRate),
-                            self.sdo_update, args=(co, )).start()
+            threading.Timer(float(co.updateRate), self.sdo_update, args=(co, )).start()
 
     # Gets all CAN Objects from the queue and gets there actual data
     def can_worker(self):
         while True:
             co = self.q.get()
             self.logger.info("can worker: set update for:%s", co.key)
-            # Only add value if key is present, otherwise do nothing (assigning
-            # to nonexisting key ads key)
+            # Only add value if key is present, otherwise do nothing (assigning to nonexisting key ads key)
             if co.key in self.CAN_Data:
-                self.CAN_Data[co.key] = co.getData(self.node)
+                data = co.getData(self.node)
+                self.CAN_Data[co.key] = data
+                if co.key in self.CAN_DataToLog:
+                    self.CAN_DataToLog[co.key] = data
             self.q.task_done()
 
     # Decode JSON config file and make CAN objects
@@ -97,30 +88,27 @@ class CANServer(object):
             # Empty existing list
             self.CAN_Objects[:] = []
             self.CAN_Data.clear()
+            self.CAN_DataToLog.clear()
 
             for co in canObjectList:
                 # Init CAN objects
-                self.CAN_Objects.append(CANObject.CANObject(co["key"], co["mode"], co["updateRate"],
+                self.CAN_Objects.append(CANObject.CANObject(co["key"], co["log"], co["updateRate"],
                                                             co["toMin"], co["toMax"],
                                                             co["fromMin"], co["fromMax"]))
                 # Init CAN Data dict with all keys and data = 0
                 self.CAN_Data[co["key"]] = "0"
 
-                # set update rate to fastest rate of all co with a minimum of 0.5
-                newRate = float(co["updateRate"])
-                if newRate < self.updateRate and newRate >= float(self.config['CANSERVER']['minUpdateRate']):
-                    self.updateRate = newRate
-                elif self.logData:
-                    self.updateRate = 0.1
-                else:
-                    self.updateRate = float(self.config['CANSERVER']['minUpdateRate'])
+                if co["log"]:
+                    self.CAN_DataToLog[co["key"]] = "0"
 
             if self.logData:
                 self.filename = '/home/pi/CAN/CANServer/python/eKartlog_' + datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.csv'
-                with open(self.filename, "w") as logfile: #  = write (new?)
+                with open(self.filename, "w") as logfile:  # = write (new?)
                     self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                    #self.logger.warn(list(self.CAN_Data.keys()))
-                    header = ['Time'] + list(self.CAN_Data.keys())
+                    # self.logger.warn(list(self.CAN_Data.keys()))
+
+                    header = ['Time'] + list(self.CAN_DataToLog.keys())
+
                     self.csvwriter.writerow(header)
                     self.initialized = True
             # Init objects
@@ -128,40 +116,20 @@ class CANServer(object):
 
         except ValueError:
             self.logger.exception("The received string is not JSON!")
+
     def initCanObjects(self):
         # setup CAN objects
         for co in self.CAN_Objects:
-            # Setup PDO
-            if co.mode == "PDO":
-                self.node.pdo.tx[1].clear()
-                self.node.pdo.tx[1].add_variable(co.key)
-                self.node.pdo.tx[1].add_callback(self.pdo_Callback)
-                self.node.pdo.tx[1].trans_type = 1
-                self.node.pdo.tx[1].enabled = True
+            self.sdo_update(co)
 
-                # Save config
-                self.node.nmt.state = 'PRE-OPERATIONAL'
-                self.node.pdo.save()
-
-                # Set sync
-                self.network.sync.start(0.01)
-
-                # Run
-                self.node.nmt.state = 'OPERATIONAL'
-            # Setup SDO
-            elif co.mode == "SDO":
-                self.sdo_update(co)
-            else:
-                self.logger.error("Mode:%s not known!", co.mode)
-
-    # Sends data on the fastest rate of all CAN Objects
+    # Sends data on the sendRate                                       
     async def producer(self):
-        await asyncio.sleep(self.updateRate)
+        await asyncio.sleep(float(self.config['CANSERVER']['sendRate']))
 
         if self.logData and self.initialized:
-            with open(self.filename, "a") as logfile: # a = append
+            with open(self.filename, "a") as logfile:  # a = append
                 self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                data = [datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]] + list(self.CAN_Data.values())
+                data = [datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]] + list(self.CAN_DataToLog.values())
                 self.csvwriter.writerow(data)
         return json.dumps(self.CAN_Data)
 

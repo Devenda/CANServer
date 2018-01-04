@@ -276,7 +276,7 @@
     "z": "db6acd24.f27e58",
     "name": "Config",
     "topic": "Config",
-    "payload": "[{\"key\":\"Vehicle Speed\",\"updateRate\":\"0.1\",\"toMin\":-3276.8,\"toMax\":3276.7,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Motor Speed\",\"updateRate\":\"0.4\",\"toMin\":-32768,\"toMax\":32767,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Current (RMS)\",\"updateRate\":\"0.1\",\"toMin\":0,\"toMax\":1000,\"fromMin\":0,\"fromMax\":10000},{\"key\":\"BDI\",\"updateRate\":\"5\",\"toMin\":0,\"toMax\":100,\"fromMin\":0,\"fromMax\":100},{\"key\":\"Motor_Temperature\",\"updateRate\":\"5\",\"toMin\":-100,\"toMax\":300,\"fromMin\":-1000,\"fromMax\":3000},{\"key\":\"Keyswitch Voltage\",\"updateRate\":\"5\",\"toMin\":0,\"toMax\":105,\"fromMin\":0,\"fromMax\":10500}]",
+    "payload": "[{\"key\":\"Vehicle Speed\",\"log\":false,\"updateRate\":\"0.1\",\"toMin\":-3276.8,\"toMax\":3276.7,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Motor Speed\",\"log\":true,\"updateRate\":\"0.4\",\"toMin\":-32768,\"toMax\":32767,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Current (RMS)\",\"log\":true,\"updateRate\":\"0.1\",\"toMin\":0,\"toMax\":1000,\"fromMin\":0,\"fromMax\":10000},{\"key\":\"BDI\",\"log\":false,\"updateRate\":\"5\",\"toMin\":0,\"toMax\":100,\"fromMin\":0,\"fromMax\":100},{\"key\":\"Motor_Temperature\",\"log\":false,\"updateRate\":\"5\",\"toMin\":-100,\"toMax\":300,\"fromMin\":-1000,\"fromMax\":3000},{\"key\":\"Keyswitch Voltage\",\"log\":true,\"updateRate\":\"5\",\"toMin\":0,\"toMax\":105,\"fromMin\":0,\"fromMax\":10500}]",
     "payloadType": "json",
     "repeat": "",
     "crontab": "",
