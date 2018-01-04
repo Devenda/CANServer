@@ -120,7 +120,8 @@ class CANServer(object):
                 with open(self.filename, "w") as logfile: #  = write (new?)
                     self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
                     #self.logger.warn(list(self.CAN_Data.keys()))
-                    self.csvwriter.writerow(list(self.CAN_Data.keys()))
+                    header = ['Time'] + list(self.CAN_Data.keys())
+                    self.csvwriter.writerow(header)
                     self.initialized = True
             # Init objects
             self.initCanObjects()
@@ -160,7 +161,8 @@ class CANServer(object):
         if self.logData and self.initialized:
             with open(self.filename, "a") as logfile: # a = append
                 self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-                self.csvwriter.writerow(list(self.CAN_Data.values()))
+                data = [datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]] + list(self.CAN_Data.values())
+                self.csvwriter.writerow(data)
         return json.dumps(self.CAN_Data)
 
     async def consumer_handler(self, websocket):
