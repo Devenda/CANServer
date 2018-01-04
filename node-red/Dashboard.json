@@ -5,10 +5,10 @@
     "name": "RPi Websocket",
     "server": "",
     "client": "3c62a0ae.3fba68",
-    "x": 111.19999694824219,
-    "y": 33.19999694824219,
+    "x": 100,
+    "y": 540,
     "wires": [
-        ["2a4b3e6c.c616ca", "fdc204e0.0ad7c"]
+        ["2a4b3e6c.c616ca"]
     ]
 }, {
     "id": "57b74830.0526d",
@@ -18,30 +18,20 @@
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 473.1999969482422,
-    "y": 87.39999103546143,
+    "x": 510,
+    "y": 540,
     "wires": []
 }, {
     "id": "2a4b3e6c.c616ca",
     "type": "json",
     "z": "db6acd24.f27e58",
     "name": "",
-    "x": 287.1999969482422,
-    "y": 136.7999849319458,
+    "pretty": false,
+    "x": 270,
+    "y": 540,
     "wires": [
-        ["57b74830.0526d", "a7cbef43.7938c", "1bfe4eba.c253f9", "73babffb.66c95", "b7777e2e.d0b448", "a49a14e9.d619f8"]
+        ["57b74830.0526d", "a7cbef43.7938c", "1bfe4eba.c253f9", "73babffb.66c95", "b7777e2e.d0b448", "a49a14e9.d619f8", "82278d17.40395"]
     ]
-}, {
-    "id": "fdc204e0.0ad7c",
-    "type": "debug",
-    "z": "db6acd24.f27e58",
-    "name": "JSON String",
-    "active": true,
-    "console": "false",
-    "complete": "payload",
-    "x": 299.49998474121094,
-    "y": 34.399991035461426,
-    "wires": []
 }, {
     "id": "a7cbef43.7938c",
     "type": "function",
@@ -50,8 +40,8 @@
     "func": "if (\"Vehicle Speed\" in msg.payload){\n    msg.payload = msg.payload[\"Vehicle Speed\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 666.1999816894531,
-    "y": 226.40003490447998,
+    "x": 640,
+    "y": 300,
     "wires": [
         ["1359a048.c0b21", "11be735d.b751cd"]
     ]
@@ -63,8 +53,8 @@
     "func": "if (\"BDI\" in msg.payload){\n    msg.payload = msg.payload[\"BDI\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 635.5000114440918,
-    "y": 152.40000438690186,
+    "x": 670,
+    "y": 620,
     "wires": [
         ["b74e36b1.ada538", "d3b5aef5.1f958"]
     ]
@@ -76,8 +66,8 @@
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 879.1999969482422,
-    "y": 208.40004348754883,
+    "x": 840,
+    "y": 280,
     "wires": []
 }, {
     "id": "c0bb772d.bdd0d",
@@ -85,8 +75,8 @@
     "z": "db6acd24.f27e58",
     "name": "What does it do?",
     "info": "This flow receives a JSON string\nCreates a JSON object (should contain array of objects)\nSplits this array\nTheses partial messages get filtered for each UI element\n",
-    "x": 822.1999969482422,
-    "y": 51.799954414367676,
+    "x": 840,
+    "y": 40,
     "wires": []
 }, {
     "id": "11be735d.b751cd",
@@ -106,18 +96,18 @@
     "colors": ["#00b500", "#e6e600", "#ca3838"],
     "seg1": "",
     "seg2": "",
-    "x": 874.1999969482422,
-    "y": 244.20005226135254,
+    "x": 840,
+    "y": 320,
     "wires": []
 }, {
     "id": "b74e36b1.ada538",
     "type": "ui_gauge",
     "z": "db6acd24.f27e58",
     "name": "BDI",
-    "group": "49b85714.c12f58",
-    "order": 2,
-    "width": "3",
-    "height": "2",
+    "group": "da92262.102b658",
+    "order": 1,
+    "width": "4",
+    "height": "3",
     "gtype": "wave",
     "title": "BDI",
     "label": "units",
@@ -127,8 +117,8 @@
     "colors": ["#00b500", "#e6e600", "#ca3838"],
     "seg1": "",
     "seg2": "",
-    "x": 791.7999839782715,
-    "y": 152.97778797149658,
+    "x": 810,
+    "y": 640,
     "wires": []
 }, {
     "id": "d3b5aef5.1f958",
@@ -138,19 +128,19 @@
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 793.2999725341797,
-    "y": 108.19999408721924,
+    "x": 810,
+    "y": 600,
     "wires": []
 }, {
     "id": "73babffb.66c95",
     "type": "function",
     "z": "db6acd24.f27e58",
-    "name": "Temperature",
-    "func": "if (\"Temperature\" in msg.payload){\n    msg.payload = msg.payload[\"Temperature\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+    "name": "Motor Temperature",
+    "func": "if (\"Motor_Temperature\" in msg.payload){\n    msg.payload = msg.payload[\"Motor_Temperature\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 658.2999725341797,
-    "y": 300.19999408721924,
+    "x": 630,
+    "y": 780,
     "wires": [
         ["1c0922ce.1b9165", "a9c7c8ae.b18e3"]
     ]
@@ -158,27 +148,27 @@
     "id": "1c0922ce.1b9165",
     "type": "ui_text",
     "z": "db6acd24.f27e58",
-    "group": "49b85714.c12f58",
-    "order": 1,
+    "group": "3baa3ad0.a1b4e6",
+    "order": 2,
     "width": 0,
     "height": 0,
-    "name": "Temperature",
-    "label": "Temp",
+    "name": "Motor Temperature",
+    "label": "Motor Temp",
     "format": "{{msg.payload}}°C",
-    "layout": "col-center",
-    "x": 830.7999725341797,
-    "y": 343.977765083313,
+    "layout": "row-spread",
+    "x": 850,
+    "y": 800,
     "wires": []
 }, {
     "id": "a9c7c8ae.b18e3",
     "type": "debug",
     "z": "db6acd24.f27e58",
-    "name": "Temperature",
+    "name": "Motor Temperature",
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 830.2999725341797,
-    "y": 300.19999408721924,
+    "x": 850,
+    "y": 760,
     "wires": []
 }, {
     "id": "b7777e2e.d0b448",
@@ -188,8 +178,8 @@
     "func": "if (\"Current (RMS)\" in msg.payload){\n    msg.payload = msg.payload[\"Current (RMS)\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 684.2999725341797,
-    "y": 436.19999408721924,
+    "x": 640,
+    "y": 380,
     "wires": [
         ["161cc51d.2acef3", "67e5983d.8d66b"]
     ]
@@ -211,8 +201,8 @@
     "colors": ["#00b500", "#e6e600", "#ca3838"],
     "seg1": "",
     "seg2": "",
-    "x": 897.5999526977539,
-    "y": 447.77780055999756,
+    "x": 840,
+    "y": 400,
     "wires": []
 }, {
     "id": "67e5983d.8d66b",
@@ -222,19 +212,19 @@
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 899.0999507904053,
-    "y": 389.9999942779541,
+    "x": 840,
+    "y": 360,
     "wires": []
 }, {
     "id": "a49a14e9.d619f8",
     "type": "function",
     "z": "db6acd24.f27e58",
-    "name": "motor speed",
+    "name": "Motor Speed",
     "func": "if (\"Motor Speed\" in msg.payload){\n    msg.payload = msg.payload[\"Motor Speed\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
     "outputs": 1,
     "noerr": 0,
-    "x": 659.2999725341797,
-    "y": 546.1999940872192,
+    "x": 650,
+    "y": 460,
     "wires": [
         ["1e0c19a2.c911e6", "bdfcb9fc.cc9e8"]
     ]
@@ -246,8 +236,8 @@
     "active": false,
     "console": "false",
     "complete": "payload",
-    "x": 872.2999877929688,
-    "y": 528.2000026702881,
+    "x": 830,
+    "y": 440,
     "wires": []
 }, {
     "id": "bdfcb9fc.cc9e8",
@@ -267,8 +257,8 @@
     "colors": ["#00b500", "#e6e600", "#ca3838"],
     "seg1": "",
     "seg2": "",
-    "x": 867.2999877929688,
-    "y": 564.0000114440918,
+    "x": 830,
+    "y": 480,
     "wires": []
 }, {
     "id": "5010e469.1f8af4",
@@ -277,55 +267,113 @@
     "name": "RPi Websocket",
     "server": "219bd4e6.8a2164",
     "client": "",
-    "x": 614.1999893188477,
-    "y": 681.4000072479248,
+    "x": 840,
+    "y": 120,
     "wires": []
-}, {
-    "id": "93485108.554df8",
-    "type": "debug",
-    "z": "db6acd24.f27e58",
-    "name": "",
-    "active": true,
-    "console": "false",
-    "complete": "false",
-    "x": 603.999942779541,
-    "y": 804.0000133514404,
-    "wires": []
-}, {
-    "id": "e9d7af0b.0dc478",
-    "type": "ui_text_input",
-    "z": "db6acd24.f27e58",
-    "name": "",
-    "label": "Dashboard config",
-    "group": "19e7098c.c5b946",
-    "order": 3,
-    "width": 0,
-    "height": 0,
-    "passthru": false,
-    "mode": "text",
-    "delay": "0",
-    "topic": "",
-    "x": 264.19998931884766,
-    "y": 681.1999950408936,
-    "wires": [
-        ["5010e469.1f8af4", "93485108.554df8"]
-    ]
 }, {
     "id": "e259a0cc.2c3738",
     "type": "inject",
     "z": "db6acd24.f27e58",
     "name": "Config",
     "topic": "Config",
-    "payload": "[     {         \"key\": \"Motor Speed\",         \"mode\": \"SDO\",         \"updateRate\": \"1\",         \"toMin\": -32768,         \"toMax\": 32767,         \"fromMin\": -32768,         \"fromMax\": 32767     } ]",
+    "payload": "[{\"key\":\"Vehicle Speed\",\"updateRate\":\"0.1\",\"toMin\":-3276.8,\"toMax\":3276.7,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Motor Speed\",\"updateRate\":\"0.4\",\"toMin\":-32768,\"toMax\":32767,\"fromMin\":-32768,\"fromMax\":32767},{\"key\":\"Current (RMS)\",\"updateRate\":\"0.1\",\"toMin\":0,\"toMax\":1000,\"fromMin\":0,\"fromMax\":10000},{\"key\":\"BDI\",\"updateRate\":\"5\",\"toMin\":0,\"toMax\":100,\"fromMin\":0,\"fromMax\":100},{\"key\":\"Motor_Temperature\",\"updateRate\":\"5\",\"toMin\":-100,\"toMax\":300,\"fromMin\":-1000,\"fromMax\":3000},{\"key\":\"Keyswitch Voltage\",\"updateRate\":\"5\",\"toMin\":0,\"toMax\":105,\"fromMin\":0,\"fromMax\":10500}]",
     "payloadType": "json",
     "repeat": "",
     "crontab": "",
-    "once": false,
-    "x": 244.19998931884766,
-    "y": 581.1999950408936,
+    "once": true,
+    "x": 90,
+    "y": 120,
     "wires": [
-        ["5010e469.1f8af4"]
+        ["72566ce1.9bb3dc", "e563c863.70a6a"]
     ]
+}, {
+    "id": "82278d17.40395",
+    "type": "function",
+    "z": "db6acd24.f27e58",
+    "name": "Keyswitch Voltage",
+    "func": "if (\"Keyswitch Voltage\" in msg.payload){\n    msg.payload = msg.payload[\"Keyswitch Voltage\"];\n}\nelse{\n    msg.payload = 0\n}\n    \nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 630,
+    "y": 700,
+    "wires": [
+        ["632a0ec4.3465b8", "41ad0d28.eeee3c"]
+    ]
+}, {
+    "id": "632a0ec4.3465b8",
+    "type": "debug",
+    "z": "db6acd24.f27e58",
+    "name": "Keyswitch Voltage",
+    "active": false,
+    "console": "false",
+    "complete": "payload",
+    "x": 850,
+    "y": 680,
+    "wires": []
+}, {
+    "id": "41ad0d28.eeee3c",
+    "type": "ui_text",
+    "z": "db6acd24.f27e58",
+    "group": "a37acae6.a5b36",
+    "order": 1,
+    "width": 0,
+    "height": 0,
+    "name": "Keyswitch Voltage",
+    "label": "Bat Voltage",
+    "format": "{{msg.payload}}°C",
+    "layout": "row-spread",
+    "x": 850,
+    "y": 720,
+    "wires": []
+}, {
+    "id": "72566ce1.9bb3dc",
+    "type": "delay",
+    "z": "db6acd24.f27e58",
+    "name": "Delay config",
+    "pauseType": "delay",
+    "timeout": "1",
+    "timeoutUnits": "seconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": "1",
+    "randomLast": "5",
+    "randomUnits": "seconds",
+    "drop": false,
+    "x": 630,
+    "y": 120,
+    "wires": [
+        ["5010e469.1f8af4", "4b76cf65.3873f8"]
+    ]
+}, {
+    "id": "e563c863.70a6a",
+    "type": "ui_template",
+    "z": "db6acd24.f27e58",
+    "group": "1d149680.839592",
+    "name": "Config Textbox",
+    "order": 2,
+    "width": 0,
+    "height": 0,
+    "format": "<script>\n    this.scope.sendConfig = function () {\n        return document.getElementById(\"ConfigTextArea\").value;\n    }\n\n    this.scope.prettify = function () {\n        var ugly = document.getElementById('ConfigTextArea').value;\n        var obj = JSON.parse(ugly);\n        var pretty = JSON.stringify(obj, undefined, 4);\n        document.getElementById(\"ConfigTextArea\").value = pretty;\n    }\n</script>\n<md-button ng-click=\"prettify()\">Prettify</md-button>\n<textarea id=\"ConfigTextArea\" cols=\"40\" rows=\"15\">{{msg.payload}}</textarea>\n<md-button ng-click=\"send({payload:sendConfig()})\">Send config</md-button>",
+    "storeOutMessages": false,
+    "fwdInMessages": false,
+    "templateScope": "local",
+    "x": 380,
+    "y": 180,
+    "wires": [
+        ["72566ce1.9bb3dc"]
+    ]
+}, {
+    "id": "4b76cf65.3873f8",
+    "type": "debug",
+    "z": "db6acd24.f27e58",
+    "name": "",
+    "active": false,
+    "console": "false",
+    "complete": "true",
+    "x": 810,
+    "y": 180,
+    "wires": []
 }, {
     "id": "3c62a0ae.3fba68",
     "type": "websocket-client",
@@ -342,14 +390,23 @@
     "disp": false,
     "width": "4"
 }, {
-    "id": "49b85714.c12f58",
+    "id": "da92262.102b658",
     "type": "ui_group",
     "z": "",
-    "name": "Status",
-    "tab": "ec22f904.fc9718",
-    "order": 4,
-    "disp": false,
-    "width": "3"
+    "name": "Battery",
+    "tab": "b9af93e4.bd5978",
+    "order": 3,
+    "disp": true,
+    "width": "4"
+}, {
+    "id": "3baa3ad0.a1b4e6",
+    "type": "ui_group",
+    "z": "",
+    "name": "Temperatures",
+    "tab": "b9af93e4.bd5978",
+    "order": 1,
+    "disp": true,
+    "width": "4"
 }, {
     "id": "e1cb6726.476df8",
     "type": "ui_group",
@@ -366,10 +423,42 @@
     "path": "ws://192.168.4.1:5678/",
     "wholemsg": "false"
 }, {
+    "id": "a37acae6.a5b36",
+    "type": "ui_group",
+    "z": "",
+    "name": "Power",
+    "tab": "b9af93e4.bd5978",
+    "order": 2,
+    "disp": true,
+    "width": "4"
+}, {
+    "id": "1d149680.839592",
+    "type": "ui_group",
+    "z": "",
+    "name": "Config",
+    "tab": "23864e45.96bf62",
+    "order": 1,
+    "disp": false,
+    "width": "6"
+}, {
     "id": "ec22f904.fc9718",
     "type": "ui_tab",
     "z": "",
     "name": "eKart",
     "icon": "dashboard",
     "order": 1
+}, {
+    "id": "b9af93e4.bd5978",
+    "type": "ui_tab",
+    "z": "",
+    "name": "Stats",
+    "icon": "dashboard",
+    "order": 2
+}, {
+    "id": "23864e45.96bf62",
+    "type": "ui_tab",
+    "z": "",
+    "name": "Config",
+    "icon": "dashboard",
+    "order": 3
 }]
