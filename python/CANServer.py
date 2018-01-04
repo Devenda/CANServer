@@ -112,6 +112,7 @@ class CANServer(object):
                                                             co["toMin"], co["toMax"],
                                                             co["fromMin"], co["fromMax"]))
                 # Init CAN Data dict with all keys and data = 0
+                self.CAN_Data["Time"] = datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]
                 self.CAN_Data[co["key"]] = "0"
 
                 if co["log"]:
@@ -147,6 +148,8 @@ class CANServer(object):
                 self.csvwriter = csv.writer(logfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 data = [datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]] + list(self.CAN_DataToLog.values())
                 self.csvwriter.writerow(data)
+
+        self.CAN_Data["Time"] = datetime.datetime.now().strftime('%H:%M:%S.%f')[:-3]
         return json.dumps(self.CAN_Data)
 
     async def consumer_handler(self, websocket):
